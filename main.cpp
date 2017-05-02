@@ -5,9 +5,8 @@
 #include <cmath>
 #include <ctime>
 #include <algorithm>
-
-
-#define password_max_length 12
+#include "conio.h"
+#define password_max_length 25
 #define encryption_code 3
 
 using namespace std;
@@ -30,7 +29,7 @@ struct yonghu  //  用户结构体 编号、姓名、性别、年龄、密码、电话、邮件、积分
     char name[50];
     char sex[6];
     int age;
-    char password[12];
+    char password[password_max_length];
     char phone[12];
     char email[30];
     int score;
@@ -44,7 +43,7 @@ struct adm //管理员结构体 编号、姓名、性别、年龄、密码、电话、邮件、积分
     char name[50];
     char sex[6];
     int age;
-    char password[12];
+    char password[password_max_length];
     char phone[12];
     int score;
     char email[30];
@@ -140,7 +139,7 @@ void insert_yhthings2(struct yhthings yhthings1); //将物品信息插入管理员
 void insert_paimaipin1(struct paimaipin wupin1); //将拍卖物品结构体插入
 void jingpai(struct yonghu *p);//竞拍功能
 void jinggou(struct yonghu *p);//竞购物品功能界面
-void password(char *password);//以星号形式接受密码并放到地址password上
+void password_intput(char *password);//以星号形式接受密码并放到地址password上
 void password_yonghu();//用户ID与密码验证
 void password_adm();//管理员ID与密码验证
 int idc(char *id);  //id装换 char 到int
@@ -171,6 +170,48 @@ void password_encryption(char *password) {
     for (int i = 0; i < strlen(password); ++i) {
         password[i] = (password[i] - 'a' + encryption_code) % 26 + 'a';
     }
+}
+
+char password_input()
+{
+    char password[25] = {'\0'};
+    char c;
+    int i=0;
+    cout<<"请输入密码："<<endl;
+    while((c = getch())!=13 || i ==0)
+    {
+        system("cls");
+        cout<<"请输入密码："<<endl;
+        switch (c)
+        {
+            case 8:
+            {
+                if(i>0)
+                {
+                    password[i-1] = '\0';
+                    i--;
+                }
+                else {
+                    password[i] = '\0';
+                }
+                break;
+            }
+            default:
+            {
+                if(i<24)
+                {
+                    password[i] = c;
+                    i++;
+                }
+            }
+        }
+        for(int j=0;j<i &&j<25; j++)
+        {
+            cout<<"*";
+        }
+    }
+    return password
+
 }
 
 void file_open()  //用来打开文件和构建链表
@@ -552,7 +593,7 @@ void input_yonghu()  //用户录入
     printf("\n请输入用户ID(8位数字):");
     scanf("%d", &yonghu1.id);
     while (yonghu1.id != 0) {
-        char password[12];
+        char password[password_max_length];
         printf("\n请输入用户姓名:");
         scanf("%s", yonghu1.name);
         printf("\n请输入用户性别(男或女):");
@@ -1108,7 +1149,7 @@ void adm_password()//管理员密码修改
     int z = 0;
     struct adm *p;
     int ID;
-    char password0[12], password2[12];
+    char password0[password_max_length], password2[password_max_length];
     system("cls");
     do {
         printf("\n请输入管理员ID（8位数字）：");
