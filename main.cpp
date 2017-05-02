@@ -165,7 +165,7 @@ void skim_thing_all();//查看所有物品信息
 void insert_yonghu(struct yonghu yonghu1); //用户结构体插入
 void help();//帮助
 void develop();//作者
-void password_encryption(char *raw_password); //密码加密
+void password_encryption(char *password); //密码加密
 
 void password_encryption(char *password) {
     for (int i = 0; i < strlen(password); ++i) {
@@ -552,6 +552,7 @@ void input_yonghu()  //用户录入
     printf("\n请输入用户ID(8位数字):");
     scanf("%d", &yonghu1.id);
     while (yonghu1.id != 0) {
+        char password[12];
         printf("\n请输入用户姓名:");
         scanf("%s", yonghu1.name);
         printf("\n请输入用户性别(男或女):");
@@ -564,6 +565,7 @@ void input_yonghu()  //用户录入
         scanf("%s", yonghu1.email);
         printf("\n请输入用户密码:");
         scanf("%s", yonghu1.password);
+        password_encryption(yonghu1.password);
         printf("\n请输入用户积分:");
         scanf("%d", &yonghu1.score);
         yonghu1.next = NULL;
@@ -741,6 +743,7 @@ void password_yonghu()//用户ID与密码验证
         fflush(stdin);
         printf("\n请输入密码(10位以内):");
         scanf("%s", password1);
+        password_encryption(password1);
         fflush(stdin);
         p = head_yonghu;
         while (p != NULL) {
@@ -786,6 +789,7 @@ void password_adm()//管理员ID与密码验证
         fflush(stdin);
         printf("\n请输入密码(10位以内):");
         scanf("%s", password1);
+        password_encryption(password1);
         fflush(stdin);
         p = head_adm;
         while (p != NULL) {
@@ -1111,6 +1115,7 @@ void adm_password()//管理员密码修改
         scanf("%d", &ID);
         printf("\n请输入原密码（10位以内）:");
         scanf("%s", password0);
+        password_encryption(password0);
         fflush(stdin);
         p = head_adm;
         while (p != NULL) {
@@ -1136,6 +1141,7 @@ void adm_password()//管理员密码修改
             scanf("%s", password2);
             fflush(stdin);
             if (strcmp(password0, password2) == 0) {
+                password_encryption(password0);
                 strcpy(p->password, password0);
                 break;
             } else {
@@ -1241,6 +1247,7 @@ void st_password_yonghu(struct yonghu *p)//用户密码修改
         scanf("%s", password2);
         fflush(stdin);
         if (strcmp(password1, password2) == 0) {
+            password_encryption(password1);
             strcpy(p->password, password1);
             printf("\n密码修改成功!");
             break;
@@ -1590,6 +1597,7 @@ void input_adm()  //管理员录入
         scanf("%d", &adm1.score);
         printf("\n请输入管理员密码:");
         scanf("%s", adm1.password);
+        password_encryption(adm1.password);
         adm1.next = NULL;
         adm1.yhthings = NULL;
         insert_adm(adm1);
@@ -2480,7 +2488,7 @@ int main() {
                 password_yonghu();
                 break;
             case 2 :
-                password1_adm();
+                password_adm();
                 break;
             case 3 :
                 help();
