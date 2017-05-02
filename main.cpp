@@ -7,6 +7,9 @@
 #include <algorithm>
 
 
+#define password_max_length 12
+#define encryption_code 3
+
 using namespace std;
 
 struct things   //物品结构体 编号、名字、朝代、简短介绍、价格
@@ -27,7 +30,7 @@ struct yonghu  //  用户结构体 编号、姓名、性别、年龄、密码、电话、邮件、积分
     char name[50];
     char sex[6];
     int age;
-    char key[12];
+    char password[12];
     char phone[12];
     char email[30];
     int score;
@@ -41,7 +44,7 @@ struct adm //管理员结构体 编号、姓名、性别、年龄、密码、电话、邮件、积分
     char name[50];
     char sex[6];
     int age;
-    char key[12];
+    char password[12];
     char phone[12];
     int score;
     char email[30];
@@ -137,9 +140,9 @@ void insert_yhthings2(struct yhthings yhthings1); //将物品信息插入管理员
 void insert_paimaipin1(struct paimaipin wupin1); //将拍卖物品结构体插入
 void jingpai(struct yonghu *p);//竞拍功能
 void jinggou(struct yonghu *p);//竞购物品功能界面
-void key(char *key);//以星号形式接受密码并放到地址key上
-void key_yonghu();//用户ID与密码验证
-void key_adm();//管理员ID与密码验证
+void password(char *password);//以星号形式接受密码并放到地址password上
+void password_yonghu();//用户ID与密码验证
+void password_adm();//管理员ID与密码验证
 int idc(char *id);  //id装换 char 到int
 void modify_thing_adm();// 管理员修改物品信息
 void modify_yonghu(struct yonghu *p1);// 用户修改自己信息
@@ -148,8 +151,8 @@ void yonghu_ui(struct yonghu *p);//学生界面
 void input_adm();  //管理员录入
 void adm_ui_1();//管理员界面1
 void adm_ui_2();//管理员界面2
-void adm_key();//管理员密码修改
-void st_key_yonghu(struct yonghu *p);//用户密码修改
+void adm_password();//管理员密码修改
+void st_password_yonghu(struct yonghu *p);//用户密码修改
 void paimai(struct yonghu *p);//用户拍卖物品
 void pairesult(struct yonghu *p);//用户拍卖的物品的结果，并删除用户物品信息
 void zuigaojia(struct paimaipin *p, struct yonghu *ppp);//获得竞购的商品结果，并完成用户的物品插入
@@ -162,10 +165,13 @@ void skim_thing_all();//查看所有物品信息
 void insert_yonghu(struct yonghu yonghu1); //用户结构体插入
 void help();//帮助
 void develop();//作者
+void password_encryption(char *raw_password); //密码加密
 
-
-
-
+void password_encryption(char *password) {
+    for (int i = 0; i < strlen(password); ++i) {
+        password[i] = (password[i] - 'a' + encryption_code) % 26 + 'a';
+    }
+}
 
 void file_open()  //用来打开文件和构建链表
 {
@@ -557,7 +563,7 @@ void input_yonghu()  //用户录入
         printf("\n请输入用户的邮箱地址:");
         scanf("%s", yonghu1.email);
         printf("\n请输入用户密码:");
-        scanf("%s", yonghu1.key);
+        scanf("%s", yonghu1.password);
         printf("\n请输入用户积分:");
         scanf("%d", &yonghu1.score);
         yonghu1.next = NULL;
@@ -715,10 +721,10 @@ int idc(char *id)  //id转换 char 到int
 }
 
 
-void key_yonghu()//用户ID与密码验证
+void password_yonghu()//用户ID与密码验证
 {
     int z = 0;
-    char key1[11];
+    char password1[11];
     int id;
     struct yonghu *p;
     do {
@@ -734,7 +740,7 @@ void key_yonghu()//用户ID与密码验证
         scanf("%d", &id);
         fflush(stdin);
         printf("\n请输入密码(10位以内):");
-        scanf("%s", key1);
+        scanf("%s", password1);
         fflush(stdin);
         p = head_yonghu;
         while (p != NULL) {
@@ -742,7 +748,7 @@ void key_yonghu()//用户ID与密码验证
             p = p->next;
         }
         if (p != NULL) {
-            if (strcmp(p->key, key1) == 0) {
+            if (strcmp(p->password, password1) == 0) {
                 yonghu_ui(p);
                 break;
             } else {
@@ -759,10 +765,10 @@ void key_yonghu()//用户ID与密码验证
 }
 
 
-void key_adm()//管理员ID与密码验证
+void password_adm()//管理员ID与密码验证
 {
     int z = 0;
-    char key1[11];
+    char password1[11];
     int id;
     struct adm *p;
     system("cls");
@@ -779,7 +785,7 @@ void key_adm()//管理员ID与密码验证
         scanf("%d", &id);
         fflush(stdin);
         printf("\n请输入密码(10位以内):");
-        scanf("%s", key1);
+        scanf("%s", password1);
         fflush(stdin);
         p = head_adm;
         while (p != NULL) {
@@ -787,7 +793,7 @@ void key_adm()//管理员ID与密码验证
             p = p->next;
         }
         if (p != NULL) {
-            if (strcmp(p->key, key1) == 0) {
+            if (strcmp(p->password, password1) == 0) {
                 adm_ui_1();
                 break;
             } else {
@@ -1093,18 +1099,18 @@ void skim_yonghu_all()//查看所有用户积分及所拥有物品
 }
 
 
-void adm_key()//管理员密码修改
+void adm_password()//管理员密码修改
 {
     int z = 0;
     struct adm *p;
     int ID;
-    char key0[12], key2[12];
+    char password0[12], password2[12];
     system("cls");
     do {
         printf("\n请输入管理员ID（8位数字）：");
         scanf("%d", &ID);
         printf("\n请输入原密码（10位以内）:");
-        scanf("%s", key0);
+        scanf("%s", password0);
         fflush(stdin);
         p = head_adm;
         while (p != NULL) {
@@ -1112,7 +1118,7 @@ void adm_key()//管理员密码修改
             p = p->next;
         }
         if (p != NULL) {
-            if (strcmp(p->key, key0) == 0) {
+            if (strcmp(p->password, password0) == 0) {
                 break;
             } else {
                 z++;
@@ -1124,13 +1130,13 @@ void adm_key()//管理员密码修改
     if (z != 5) {
         do {
             printf("\n请输入新密码:");
-            scanf("%s", key0);
+            scanf("%s", password0);
             fflush(stdin);
             printf("\n请再次输入新密码:");
-            scanf("%s", key2);
+            scanf("%s", password2);
             fflush(stdin);
-            if (strcmp(key0, key2) == 0) {
-                strcpy(p->key, key0);
+            if (strcmp(password0, password2) == 0) {
+                strcpy(p->password, password0);
                 break;
             } else {
                 printf("\n两次密码不一致，请重新输入,不再修改请输入0,继续修改请输入1.");
@@ -1211,7 +1217,7 @@ void yonghu_ui(struct yonghu *p)//用户界面
                 print_yonghu(p);
                 break;
             case 4 :
-                st_key_yonghu(p);
+                st_password_yonghu(p);
                 break;
             case 5:
                 skim_yhthings(p);
@@ -1222,20 +1228,20 @@ void yonghu_ui(struct yonghu *p)//用户界面
 }
 
 
-void st_key_yonghu(struct yonghu *p)//用户密码修改
+void st_password_yonghu(struct yonghu *p)//用户密码修改
 {
-    char key1[11], key2[11];
+    char password1[11], password2[11];
     int z = 1;
     system("cls");
     do {
         printf("\n请输入新密码:");
-        scanf("%s", key1);
+        scanf("%s", password1);
         fflush(stdin);
         printf("\n请再次输入新密码:");
-        scanf("%s", key2);
+        scanf("%s", password2);
         fflush(stdin);
-        if (strcmp(key1, key2) == 0) {
-            strcpy(p->key, key1);
+        if (strcmp(password1, password2) == 0) {
+            strcpy(p->password, password1);
             printf("\n密码修改成功!");
             break;
         } else {
@@ -1583,7 +1589,7 @@ void input_adm()  //管理员录入
         printf("\n请输入管理员积分：");
         scanf("%d", &adm1.score);
         printf("\n请输入管理员密码:");
-        scanf("%s", adm1.key);
+        scanf("%s", adm1.password);
         adm1.next = NULL;
         adm1.yhthings = NULL;
         insert_adm(adm1);
@@ -1689,7 +1695,7 @@ void adm_ui_2()//管理员界面2
                 skim_yonghu_all();
                 break;
             case 6 :
-                adm_key();
+                adm_password();
                 break;
             case 5:
                 skim_yhthings1();
@@ -1831,7 +1837,7 @@ void copy_yonghu(struct yonghu *p1, struct yonghu yonghu1)// 用于复制用户信息 减
     strcpy(p1->sex, yonghu1.sex);
     p1->age = yonghu1.age;
     p1->score = yonghu1.score;
-    strcpy(p1->key, yonghu1.key);
+    strcpy(p1->password, yonghu1.password);
 }
 
 
@@ -1930,7 +1936,7 @@ void copy_admin(struct adm *p1, struct adm adm1)// 用于复制管理员信息 减少代码量
     strcpy(p1->sex, adm1.sex);
     p1->age = adm1.age;
     p1->score = adm1.score;
-    strcpy(p1->key, adm1.key);
+    strcpy(p1->password, adm1.password);
 }
 
 
@@ -2471,10 +2477,10 @@ int main() {
             case 0 :
                 break;
             case 1 :
-                key_yonghu();
+                password_yonghu();
                 break;
             case 2 :
-                key_adm();
+                password1_adm();
                 break;
             case 3 :
                 help();
