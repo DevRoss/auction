@@ -107,7 +107,6 @@ struct order  // 为了用户积分排名
 struct info //信息结构体
 {
     int num;  // the amount of yonghu or yhthings or things
-    char key[11];
 } thing_info, yhthings_info, yonghu_info, adm_info, paimaipin_info;
 
 FILE *yonghu_file, *thing_file, *yhthings_file, *adm_file, *paimaipin_file;
@@ -192,9 +191,7 @@ void file_open()  //用来打开文件和构建链表
         fread(&yonghu_info, sizeof(struct info), 1, yonghu_file); // yonghu
         fread(&adm_info, sizeof(struct info), 1, adm_file); // adm
         fread(&paimaipin_info, sizeof(struct info), 1, paimaipin_file); // paimaipin
-        strcpy(yhthings_info.key, "00000000");
-//        if (thing_info.num == 0 && yhthings_info.num == 0) strcpy(thing_info.key, "123456"); // 创建物品线性表
-//        if (yonghu_info.num == 0) strcpy(yonghu_info.key, "1345"); // 创建用户线性表
+
         if (thing_info.num <= 0)//没物品数据或者没有初始化0
 
         {
@@ -281,7 +278,7 @@ void file_open()  //用来打开文件和构建链表
 }
 
 
-void file_close()  //关闭文件
+void file_close()  //关闭文件,将缓存保存在文件
 {
 
     struct things *p1, *p11;
