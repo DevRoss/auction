@@ -6,6 +6,7 @@
 #include <ctime>
 #include <algorithm>
 #include "conio.h"
+
 #define password_max_length 25
 #define encryption_code 3
 
@@ -18,6 +19,7 @@ struct things   //物品结构体 编号、名字、朝代、简短介绍、价格
     char time[20];
     char introduce[300];
     double price;
+    int type;
     struct things *next;
     struct yonghu *yonghu;
 
@@ -135,7 +137,7 @@ void insert_yhthings2(struct yhthings yhthings1); //将物品信息插入管理员
 void insert_paimaipin1(struct paimaipin wupin1); //将拍卖物品结构体插入
 void jingpai(struct yonghu *p);//竞拍功能
 void jinggou(struct yonghu *p);//竞购物品功能界面
-void password_intput(char *password);//以星号形式接受密码并放到地址password上
+void password_input(char *password);//以星号形式接受密码并放到地址password上
 void password_yonghu();//用户ID与密码验证
 void password_adm();//管理员ID与密码验证
 int idc(char *id);  //id装换 char 到int
@@ -151,7 +153,7 @@ void st_password_yonghu(struct yonghu *p);//用户密码修改
 void paimai(struct yonghu *p);//用户拍卖物品
 void pairesult(struct yonghu *p);//用户拍卖的物品的结果，并删除用户物品信息
 void zuigaojia(struct paimaipin *p, struct yonghu *ppp);//获得竞购的商品结果，并完成用户的物品插入
-void skim_thing_kind(); // 根据类别查看物品 管理员功能
+void show_thing_with_kind(); // 根据类别查看物品 管理员功能
 void skim_yonghu_score();//按积分查看用户
 void skim_yhthings(struct yonghu *p);//查看所有用户物品信息
 void pfree_yhthings(struct yonghu *p_yonghu, struct things *p_things, struct yhthings yhthings1);//解锁及释放用户物品内存
@@ -168,41 +170,32 @@ void password_encryption(char *password) {
     }
 }
 
-void password_input(char *password)
-{
+void password_input(char *password) {
     char c;
-    int i=0;
-    cout<<"请输入密码："<<endl;
-    while((c = getch())!=13 || i ==0)
-    {
+    int i = 0;
+    cout << "请输入密码：" << endl;
+    while ((c = getch()) != 13 || i == 0) {
         system("cls");
-        cout<<"请输入密码："<<endl;
-        switch (c)
-        {
-            case 8:
-            {
-                if(i>0)
-                {
-                    password[i-1] = '\0';
+        cout << "请输入密码：" << endl;
+        switch (c) {
+            case 8: {
+                if (i > 0) {
+                    password[i - 1] = '\0';
                     i--;
-                }
-                else {
+                } else {
                     password[i] = '\0';
                 }
                 break;
             }
-            default:
-            {
-                if(i<24)
-                {
+            default: {
+                if (i < 24) {
                     password[i] = c;
                     i++;
                 }
             }
         }
-        for(int j=0;j<i &&j<25; j++)
-        {
-            cout<<"*";
+        for (int j = 0; j < i && j < 25; j++) {
+            cout << "*";
         }
     }
 }
@@ -383,6 +376,7 @@ void file_close()  //关闭文件,将缓存保存在文件
 void copy_things(struct things *p1, struct things thing1)// 用于复制物品信息 减少代码量
 {
     p1->id = thing1.id;
+    p1->type = thing1.type;
     p1->price = thing1.price;
     strcpy(p1->name, thing1.name);
     strcpy(p1->time, thing1.time);
@@ -567,6 +561,8 @@ void input_thing()  //物品信息录入
         scanf("%s", thing1.time);
         printf("\n请输入物品价格：");
         scanf("%lf", &thing1.price);
+        printf("请输入物品类型，虚拟物品为0，实体物品为1：");
+        scanf("%d", &thing1.type);
         printf("\n请输入物品介绍(140字以内):");
         scanf("%s", thing1.introduce);
         thing1.next = NULL;
@@ -1140,7 +1136,7 @@ void adm_password()//管理员密码修改
     struct adm *p;
     int ID;
     char password0[password_max_length] = {'\0'};
-    char password2[password_max_length]  {'\0'};
+    char password2[password_max_length]{'\0'};
     system("cls");
     do {
         printf("\n请输入管理员ID（8位数字）：");
@@ -1148,7 +1144,7 @@ void adm_password()//管理员密码修改
         printf("\n请输入原密码（10位以内）:");
         password_input(password0);
         password_encryption(password0);
-        cout<<password0<<endl;
+        cout << password0 << endl;
         fflush(stdin);
         p = head_adm;
         while (p != NULL) {
@@ -1236,7 +1232,7 @@ void yonghu_ui(struct yonghu *p)//用户界面
         printf("\t\t\t--------------------------------\n");
         printf("\t\t\t+    [1]----修改个人信息       |\n");
         printf("\t\t\t+    [2]----参与竞拍           |\n");
-        printf("\t\t\t+    [3]----查询所有物品信息   |\n");
+        printf("\t\t\t+    [3]----查询所有用户信息   |\n");
         printf("\t\t\t+    [4]----修改密码           |\n");
         printf("\t\t\t+    [5]----查看个人物品信息   |\n");
         printf("\t\t\t+    [0]----返回主界面         |\n");
@@ -1309,6 +1305,38 @@ void skim_thing_all()//查看所有物品信息
         printf("\n物品朝代：%s", p1->time);
         printf("\n物品价格：%lf", p1->price);
         printf("\n物品介绍: %s\n", p1->introduce);
+        if (p1->type == 1)
+            printf("\n物品类型: 实体");
+        else printf("\n物品类型: 虚拟");
+        p1 = p1->next;
+    }
+    getchar();
+    getchar();
+}
+
+
+void show_thing_with_kind()//查看所有物品信息
+{
+    struct things *p1;
+    system("cls");
+    p1 = head;
+    int type;
+    printf("请输入物品类型，0为虚拟物品，1为实体物品");
+    scanf("%d", &type);
+    printf("\n-------------------------------------------------------------------");
+    printf("\nID>>>>>物品信息>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    printf("\n-------------------------------------------------------------------");
+    while (p1 != NULL) {
+        if (type == p1->type) {
+            printf("\n物品ID：  %d", p1->id);
+            printf("\n物品名称：%s", p1->name);
+            printf("\n物品朝代：%s", p1->time);
+            printf("\n物品价格：%lf", p1->price);
+            printf("\n物品介绍: %s\n", p1->introduce);
+            if (p1->type == 1)
+                printf("\n物品类型: 实体");
+            else printf("\n物品类型: 虚拟");
+        }
         p1 = p1->next;
     }
     getchar();
@@ -1427,6 +1455,7 @@ void modify_thing_adm()// 管理员修改物品信息
             printf("\n\t\t\t**\t(2)朝代    \t**");
             printf("\n\t\t\t**\t(3)价格    \t**");
             printf("\n\t\t\t**\t(4)简短介绍\t**");
+            printf("\n\t\t\t**\t(5)物品类型\t**");
             printf("\n\t\t\t**************************");
             printf("\n请输入数字(输入0停止修改):");
             scanf("%d", &z);
@@ -1451,6 +1480,11 @@ void modify_thing_adm()// 管理员修改物品信息
                 case 4:
                     printf("请输入新介绍：");
                     scanf("%s", p1->introduce);
+                    fflush(stdin);
+                    break;
+                case 5:
+                    printf("请输入新物品种类,虚拟物品为0，实体物品为1：");
+                    scanf("%d", p1->type);
                     fflush(stdin);
                     break;
                 default :
@@ -1611,7 +1645,7 @@ void del_things()//删除用户信息
 void input_adm()  //管理员录入
 {
     struct adm adm1;
-    char password[password_max_length]= {'\0'};
+    char password[password_max_length] = {'\0'};
     printf("\n请输入管理员数据,输入0结束输入.");
     printf("\n请输入管理员ID(8位数字):");
     scanf("%d", &adm1.id);
@@ -1629,7 +1663,6 @@ void input_adm()  //管理员录入
         password_input(password);
         password_encryption(password);
         strcpy(adm1.password, password);
-        cout << adm1.password;
         adm1.next = NULL;
         adm1.yhthings = NULL;
         insert_adm(adm1);
@@ -1696,6 +1729,7 @@ void adm_ui_1()//管理员界面1
                 printf("\n客官，没有这个选项呢!");
         }
     } while (z != 0);
+    system("cls");
 }
 
 
@@ -1706,17 +1740,18 @@ void adm_ui_2()//管理员界面2
     do {
 
 
-        printf("\n\t\t\t--------------------------------\n");
-        printf("\t\t\t+            管理员            |\n");
+        printf("\n\t\t\t-----------------------------------\n");
+        printf("\t\t\t+            管理员                |\n");
         printf("\t\t\t--------------------------------\n");
-        printf("\t\t\t+  [1]----修改物品信息         |\n");
-        printf("\t\t\t+  [2]----修改用户信息         |\n");
-        printf("\t\t\t+  [3]----统计所有物品信息     |\n");
-        printf("\t\t\t+  [4]----统计所有用户信息     |\n");
-        printf("\t\t\t+  [5]----统计所有用户物品信息 |\n");
-        printf("\t\t\t+  [6]----管理员密码修改       |\n");
-        printf("\t\t\t+  [0]---- 上一页              |\n");
-        printf("\t\t\t--------------------------------\n");
+        printf("\t\t\t+  [1]----修改物品信息              |\n");
+        printf("\t\t\t+  [2]----修改用户信息              |\n");
+        printf("\t\t\t+  [3]----统计所有物品信息           |\n");
+        printf("\t\t\t+  [4]----根据种类统计所有物品信息    |\n");
+        printf("\t\t\t+  [5]----统计所有用户信息           |\n");
+        printf("\t\t\t+  [6]----统计所有用户物品信息       |\n");
+        printf("\t\t\t+  [7]----管理员密码修改            |\n");
+        printf("\t\t\t+  [0]---- 上一页                  |\n");
+        printf("\t\t\t-----------------------------------\n");
         printf("请输入您的选择：");
         scanf("%d", &z);
         switch (z) {
@@ -1732,18 +1767,22 @@ void adm_ui_2()//管理员界面2
                 skim_thing_all();
                 break;
             case 4 :
+                show_thing_with_kind();
+                break;
+            case 5 :
                 skim_yonghu_all();
                 break;
-            case 6 :
+            case 7 :
                 adm_password();
                 break;
-            case 5:
+            case 6:
                 skim_yhthings1();
                 break;
             default:
-                printf("\n客官，没有这个选项呢!");
+                printf("\n对不起，没有这个选项!");
         }
     } while (z != 0);
+    system("cls");
 }
 
 
@@ -1856,10 +1895,8 @@ void buy(struct yonghu *p)//竞购自己想要的物品
                         scanf("%lf", &p6->price);
                     }
                 }
-
                 printf("您的竞拍请求已经提交，请在竞拍结束后查看结果。");
             }
-
         }
         printf("请输入您要竞购的物品id(输入0则返回上一层菜单）：");
         scanf("%d", &id);
