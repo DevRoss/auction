@@ -23,7 +23,7 @@ struct things   //物品结构体 编号、名字、朝代、简短介绍、价格
 
 } thing1, *pp1;
 
-struct yonghu  //  用户结构体 编号、姓名、性别、年龄、密码、电话、邮件、积分
+struct yonghu  //  用户结构体 编号、姓名、密码、电话、邮件、积分
 {
     int id;
     char name[50];
@@ -35,7 +35,7 @@ struct yonghu  //  用户结构体 编号、姓名、性别、年龄、密码、电话、邮件、积分
     struct yhthings *yhthings;
 } yonghu1;
 
-struct adm //管理员结构体 编号、姓名、性别、年龄、密码、电话、邮件、积分
+struct adm    //  管理员结构体 编号、姓名、密码、电话、邮件、积分
 {
     int id;
     char name[50];
