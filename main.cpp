@@ -172,9 +172,8 @@ void password_encryption(char *password) {
     }
 }
 
-char password_input()
+void password_input(char *password)
 {
-    char password[25] = {'\0'};
     char c;
     int i=0;
     cout<<"请输入密码："<<endl;
@@ -210,8 +209,6 @@ char password_input()
             cout<<"*";
         }
     }
-    return password
-
 }
 
 void file_open()  //用来打开文件和构建链表
@@ -771,19 +768,23 @@ void password_yonghu()//用户ID与密码验证
     int id;
     struct yonghu *p;
     do {
-        printf("\n\t\t\t|&|*************用户登录*************|&|");
+        printf("\n\t\t\t|&|*************用户登录**************|&|");
         printf("\n\t\t\t|&|----------------------------------|&|");
-        printf("\n\t\t\t|&|          .                       |&|");
-        printf("\n\t\t\t|&|         / '-.                    |&|");
-        printf("\n\t\t\t|&|        /.-.  '--------------.    |&|");
-        printf("\n\t\t\t|&|        \\'-'..--''--'' -''-'      |&|");
-        printf("\n\t\t\t|&|         '--'                     |&|");
+        printf("\n\t\t\t|&|                      ++++        |&|");
+        printf("\n\t\t\t|&|                     ++++++       |&|");
+        printf("\n\t\t\t|&|                 +  +++++++++     |&|");
+        printf("\n\t\t\t|&|   ++++++ +++ +++++++++++++++++   |&|");
+        printf("\n\t\t\t|&| ++++++++++++++++++++++++++   +   |&|");
+        printf("\n\t\t\t|&|   ++++++++++++++++++++++++++++   |&|");
+        printf("\n\t\t\t|&|                 +  +++++++++     |&|");
+        printf("\n\t\t\t|&|                     ++++++       |&|");
         printf("\n\t\t\t|&|----------------------------------|&|");
+
         printf("\n请输入用户ID(8位数字):");
         scanf("%d", &id);
         fflush(stdin);
-        printf("\n请输入密码(10位以内):");
-        scanf("%s", password1);
+        printf("\n请输入密码(24位以内):");
+        password_input(password1);
         password_encryption(password1);
         fflush(stdin);
         p = head_yonghu;
@@ -817,19 +818,22 @@ void password_adm()//管理员ID与密码验证
     struct adm *p;
     system("cls");
     do {
-        printf("\n\t\t\t|&|***********管理员登录*************|&|");
+        printf("\n\t\t\t|&|*************用户登录**************|&|");
         printf("\n\t\t\t|&|----------------------------------|&|");
-        printf("\n\t\t\t|&|          .                       |&|");
-        printf("\n\t\t\t|&|         / '-.                    |&|");
-        printf("\n\t\t\t|&|        /.-.  '--------------.    |&|");
-        printf("\n\t\t\t|&|        \\'-'..--''--'' -''-'      |&|");
-        printf("\n\t\t\t|&|         '--'                     |&|");
+        printf("\n\t\t\t|&|                      ++++        |&|");
+        printf("\n\t\t\t|&|                     ++++++       |&|");
+        printf("\n\t\t\t|&|                 +  +++++++++     |&|");
+        printf("\n\t\t\t|&|   ++++++ +++ +++++++++++++++++   |&|");
+        printf("\n\t\t\t|&| ++++++++++++++++++++++++++   +   |&|");
+        printf("\n\t\t\t|&|   ++++++++++++++++++++++++++++   |&|");
+        printf("\n\t\t\t|&|                 +  +++++++++     |&|");
+        printf("\n\t\t\t|&|                     ++++++       |&|");
         printf("\n\t\t\t|&|----------------------------------|&|");
         printf("\n请输入管理员ID(8位数字):");
         scanf("%d", &id);
         fflush(stdin);
-        printf("\n请输入密码(10位以内):");
-        scanf("%s", password1);
+        printf("\n请输入密码(24位以内):");
+        password_input(password1);
         password_encryption(password1);
         fflush(stdin);
         p = head_adm;
@@ -1149,14 +1153,16 @@ void adm_password()//管理员密码修改
     int z = 0;
     struct adm *p;
     int ID;
-    char password0[password_max_length], password2[password_max_length];
+    char password0[password_max_length] = {'\0'};
+    char password2[password_max_length]  {'\0'};
     system("cls");
     do {
         printf("\n请输入管理员ID（8位数字）：");
         scanf("%d", &ID);
         printf("\n请输入原密码（10位以内）:");
-        scanf("%s", password0);
+        password_input(password0);
         password_encryption(password0);
+        cout<<password0<<endl;
         fflush(stdin);
         p = head_adm;
         while (p != NULL) {
@@ -1176,10 +1182,10 @@ void adm_password()//管理员密码修改
     if (z != 5) {
         do {
             printf("\n请输入新密码:");
-            scanf("%s", password0);
+            password_input(password0);
             fflush(stdin);
             printf("\n请再次输入新密码:");
-            scanf("%s", password2);
+            password_input(password2);
             fflush(stdin);
             if (strcmp(password0, password2) == 0) {
                 password_encryption(password0);
@@ -2499,7 +2505,6 @@ int main() {
 
     system("cls");
     do {
-
         cout << " \t__          ________ _      _____ ____  __  __ ______ \n";
         cout << " \t\\ \\        / /  ____| |    / ____/ __ \\|  \\/  |  ____|\n";
         cout << " \t \\ \\  /\\  / /| |__  | |   | |   | |  | | \\  / | |__   \n";
