@@ -27,8 +27,6 @@ struct yonghu  //  用户结构体 编号、姓名、性别、年龄、密码、电话、邮件、积分
 {
     int id;
     char name[50];
-    char sex[6];
-    int age;
     char password[password_max_length];
     char phone[12];
     char email[30];
@@ -41,8 +39,6 @@ struct adm //管理员结构体 编号、姓名、性别、年龄、密码、电话、邮件、积分
 {
     int id;
     char name[50];
-    char sex[6];
-    int age;
     char password[password_max_length];
     char phone[12];
     int score;
@@ -593,10 +589,6 @@ void input_yonghu()  //用户录入
         char password[password_max_length];
         printf("\n请输入用户姓名:");
         scanf("%s", yonghu1.name);
-        printf("\n请输入用户性别(男或女):");
-        scanf("%s", yonghu1.sex);
-        printf("\n请输入用户年龄：");
-        scanf("%d", &yonghu1.age);
         printf("\n请输入用户电话号码(11位手机号码):");
         scanf("%s", yonghu1.phone);
         printf("\n请输入用户的邮箱地址:");
@@ -662,9 +654,9 @@ void print_yonghu(struct yonghu *p1)  //输出用户信息
 {
     struct yhthings *p2;
     printf("\n------------------------------------------------------------");
-    printf("\nID\t>>名字>>>性别>年龄>积分>>>>手机号码>>>>邮件>>>>>>>>>>>>>");
+    printf("\nID\t>>名字>积分>>>>手机号码>>>>邮件>>>>>>>>>>>>>");
     printf("\n------------------------------------------------------------");
-    printf("\n%d %s  %s   %d   %d    %s    %s", p1->id, p1->name, p1->sex, p1->age, p1->score, p1->phone, p1->email);
+    printf("\n%d %s   %d    %s    %s", p1->id, p1->name, p1->score, p1->phone, p1->email);
     if (p1->yhthings == NULL) {
         printf("\n暂无他的物品信息!");
     } else {
@@ -764,7 +756,7 @@ int idc(char *id)  //id转换 char 到int
 void password_yonghu()//用户ID与密码验证
 {
     int z = 0;
-    char password1[11];
+    char password1[password_max_length] = {'\0'};
     int id;
     struct yonghu *p;
     do {
@@ -813,7 +805,7 @@ void password_yonghu()//用户ID与密码验证
 void password_adm()//管理员ID与密码验证
 {
     int z = 0;
-    char password1[11];
+    char password1[password_max_length] = {'\0'};
     int id;
     struct adm *p;
     system("cls");
@@ -867,9 +859,8 @@ void modify_yonghu(struct yonghu *p1)// 用户修改自己信息
     printf("\n\t\t\t**************************");
     printf("\n\t\t\t**\t修改项目\t**");
     printf("\n\t\t\t**************************");
-    printf("\n\t\t\t**\t(1)年龄    \t**");
-    printf("\n\t\t\t**\t(2)邮件    \t**");
-    printf("\n\t\t\t**\t(3)电话号码\t**");
+    printf("\n\t\t\t**\t(1)邮件    \t**");
+    printf("\n\t\t\t**\t(2)电话号码\t**");
     printf("\n\t\t\t**************************");
     printf("\n请输入数字(输入0停止修改):");
     scanf("%d", &z);
@@ -877,16 +868,11 @@ void modify_yonghu(struct yonghu *p1)// 用户修改自己信息
         case 0:
             break;
         case 1:
-            printf("请输入年龄:");
-            scanf("%d", &p1->age);
-            fflush(stdin);
-            break;
-        case 2:
             printf("请输入邮件:");
             scanf("%s", p1->email);
             fflush(stdin);
             break;
-        case 3:
+        case 2:
             printf("请输入电话号码:");
             scanf("%s", p1->phone);
             fflush(stdin);
@@ -1625,6 +1611,7 @@ void del_things()//删除用户信息
 void input_adm()  //管理员录入
 {
     struct adm adm1;
+    char password[password_max_length]= {'\0'};
     printf("\n请输入管理员数据,输入0结束输入.");
     printf("\n请输入管理员ID(8位数字):");
     scanf("%d", &adm1.id);
@@ -1632,10 +1619,6 @@ void input_adm()  //管理员录入
         //initialize and create
         printf("\n请输入管理员姓名:");
         scanf("%s", adm1.name);
-        printf("\n请输入管理员性别(男或女):");
-        scanf("%s", adm1.sex);
-        printf("\n请输入管理员年龄：");
-        scanf("%d", &adm1.age);
         printf("\n请输入管理员电话号码(11位手机号码):");
         scanf("%s", adm1.phone);
         printf("\n请输入管理员邮箱地址：");
@@ -1643,8 +1626,10 @@ void input_adm()  //管理员录入
         printf("\n请输入管理员积分：");
         scanf("%d", &adm1.score);
         printf("\n请输入管理员密码:");
-        scanf("%s", adm1.password);
-        password_encryption(adm1.password);
+        password_input(password);
+        password_encryption(password);
+        strcpy(adm1.password, password);
+        cout << adm1.password;
         adm1.next = NULL;
         adm1.yhthings = NULL;
         insert_adm(adm1);
@@ -1889,8 +1874,6 @@ void copy_yonghu(struct yonghu *p1, struct yonghu yonghu1)// 用于复制用户信息 减
     strcpy(p1->email, yonghu1.email);
     strcpy(p1->name, yonghu1.name);
     strcpy(p1->phone, yonghu1.phone);
-    strcpy(p1->sex, yonghu1.sex);
-    p1->age = yonghu1.age;
     p1->score = yonghu1.score;
     strcpy(p1->password, yonghu1.password);
 }
@@ -1988,8 +1971,6 @@ void copy_admin(struct adm *p1, struct adm adm1)// 用于复制管理员信息 减少代码量
     strcpy(p1->email, adm1.email);
     strcpy(p1->name, adm1.name);
     strcpy(p1->phone, adm1.phone);
-    strcpy(p1->sex, adm1.sex);
-    p1->age = adm1.age;
     p1->score = adm1.score;
     strcpy(p1->password, adm1.password);
 }
