@@ -6,9 +6,11 @@
 #include <ctime>
 #include <algorithm>
 #include "conio.h"
+#include <unistd.h>
 
 #define password_max_length 25
 #define encryption_code 3
+
 
 using namespace std;
 
@@ -109,13 +111,20 @@ struct info //ĞÅÏ¢½á¹¹Ìå
     int num;  // the amount of yonghu or yhthings or things
 } thing_info, yhthings_info, yonghu_info, adm_info, paimaipin_info;
 
-FILE *yonghu_file, *thing_file, *yhthings_file, *adm_file, *paimaipin_file;
+
+FILE *yonghu_file, *thing_file, *yhthings_file, *adm_file, *paimaipin_file, *log_file;
+char log_message[255];
+char log_message_clear[255] = {'\0'};
+char password_clear[password_max_length] = {'\0'};
 
 struct things *head = NULL, *p1, *p2;
 struct yonghu *head_yonghu = NULL;
 struct adm *head_adm = NULL;
 struct yhthings *head_yhthings = NULL, *yhthingsp, *headc;
 struct paimaipin *head_pai = NULL, *paimaipinsp;
+
+
+//-------------------------------------------function list-------------------------------------------//
 
 void copy_things(struct things *p1, struct things thing1);// ÓÃÓÚ¸´ÖÆÎïÆ·ĞÅÏ¢
 void copy_paimaipin(struct paimaipin *p1, struct paimaipin wupin1);// ÓÃÓÚ¸´ÖÆÅÄÂôÎïÆ·ĞÅÏ¢ ¼õÉÙ´úÂëÁ¿
@@ -154,15 +163,21 @@ void paimai(struct yonghu *p);//ÓÃ»§ÅÄÂôÎïÆ·
 void pairesult(struct yonghu *p);//ÓÃ»§ÅÄÂôµÄÎïÆ·µÄ½á¹û£¬²¢É¾³ıÓÃ»§ÎïÆ·ĞÅÏ¢
 void zuigaojia(struct paimaipin *p, struct yonghu *ppp);//»ñµÃ¾º¹ºµÄÉÌÆ·½á¹û£¬²¢Íê³ÉÓÃ»§µÄÎïÆ·²åÈë
 void show_thing_with_kind(); // ¸ù¾İÀà±ğ²é¿´ÎïÆ· ¹ÜÀíÔ±¹¦ÄÜ
-void skim_yonghu_score();//°´»ı·Ö²é¿´ÓÃ»§
 void skim_yhthings(struct yonghu *p);//²é¿´ËùÓĞÓÃ»§ÎïÆ·ĞÅÏ¢
 void pfree_yhthings(struct yonghu *p_yonghu, struct things *p_things, struct yhthings yhthings1);//½âËø¼°ÊÍ·ÅÓÃ»§ÎïÆ·ÄÚ´æ
-void skim_yonghu_score(struct yonghu *p);//²é¿´ËùÓĞÓÃ»§»ı·Ö
 void skim_thing_all();//²é¿´ËùÓĞÎïÆ·ĞÅÏ¢
 void insert_yonghu(struct yonghu yonghu1); //ÓÃ»§½á¹¹Ìå²åÈë
 void help();//°ïÖú
 void develop();//×÷Õß
 void password_encryption(char *password); //ÃÜÂë¼ÓÃÜ
+void logging(int id, char *action); //ÈÕÖ¾¼ÇÂ¼
+void show_log();  //¹ÜÀíÔ±ÏÔÊ¾ÈÕÖ¾
+void user_register(); //ÓÃ»§×¢²á
+
+//-------------------------------------------function list-------------------------------------------//
+
+
+
 
 void password_encryption(char *password) {
     for (int i = 0; i < strlen(password); ++i) {
@@ -170,13 +185,39 @@ void password_encryption(char *password) {
     }
 }
 
+
+void logging(int id, char *action) {
+    time_t time_p;
+    time(&time_p);
+    //printf("%s", ctime(&timep));
+    fprintf(log_file, "%sID:%-8d%s\n", ctime(&time_p), id, action);
+    strcpy(log_message, log_message_clear);   //Çå¿ÕÈÕÖ¾ÊµÀıĞÅÏ¢
+}
+
+
+void show_log() {
+    fseek(log_file, 0, SEEK_SET);
+    char buffer[1024] = {'\0'};
+    char clear_buffer[1024] = {'\0'};
+    while (!feof(log_file)) {
+        strcpy(buffer, clear_buffer);
+        fgets(buffer, 1024, log_file);
+        if (strlen(buffer) > 0)
+            cout << buffer;
+    }
+    printf("°´ÈÎÒâ¼üÍË³ö");
+    getch();
+    system("cls");
+}
+
+
 void password_input(char *password) {
     char c;
     int i = 0;
-    cout << "ÇëÊäÈëÃÜÂë£º" << endl;
+    printf("ÇëÊäÈëÃÜÂë£º\n");
     while ((c = getch()) != 13 || i == 0) {
         system("cls");
-        cout << "ÇëÊäÈëÃÜÂë£º" << endl;
+        printf("ÇëÊäÈëÃÜÂë£º\n");
         switch (c) {
             case 8: {
                 if (i > 0) {
@@ -208,6 +249,7 @@ void file_open()  //ÓÃÀ´´ò¿ªÎÄ¼şºÍ¹¹½¨Á´±í
     struct adm adm1;
     //struct yhthings *cp;
     int a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0;
+    log_file = fopen("logs.txt", "a+");
     if ((thing_file = fopen("things", "rb")) == NULL || (yhthings_file = fopen("yhthings", "rb")) == NULL ||
         (yonghu_file = fopen("yonghu", "rb")) == NULL || (adm_file = fopen("adm", "rb")) == NULL ||
         (paimaipin_file = fopen("paimaipin", "rb")) == NULL) //can't open the file
@@ -324,7 +366,7 @@ void file_close()  //¹Ø±ÕÎÄ¼ş,½«»º´æ±£´æÔÚÎÄ¼ş
     yonghu_file = fopen("yonghu", "wb");
     adm_file = fopen("adm", "wb");
     paimaipin_file = fopen("paimaipin", "wb");
-
+    fclose(log_file);
     fwrite(&thing_info, sizeof(struct info), 1, thing_file);
     fwrite(&yhthings_info, sizeof(struct info), 1, yhthings_file);
     fwrite(&yonghu_info, sizeof(struct info), 1, yonghu_file);
@@ -549,6 +591,7 @@ void insert_yhthings2(struct yhthings yhthings1)  //½«ÓÃ»§ÎïÆ·ĞÅÏ¢²åÈëÓÃ»§ÎïÆ·Á´
 
 void input_thing()  //ÎïÆ·ĞÅÏ¢Â¼Èë
 {
+    system("cls");
     struct things thing1;
     printf("\nÇëÊäÈëÎïÆ·Êı¾İ,ÊäÈë0½áÊøÊäÈë.");
     printf("\nÇëÊäÈëÎïÆ·ID(8Î»Êı×Ö):");
@@ -569,6 +612,9 @@ void input_thing()  //ÎïÆ·ĞÅÏ¢Â¼Èë
         thing1.yonghu = NULL;
         insert_thing(thing1);
         //select_n(p1);
+        sprintf(log_message, "thing_input\nname:%s, time:%s, type:%d,", thing1.name, thing1.time,
+                thing1.type); //¸ñÊ½»¯ÈÕÖ¾Êä³ö
+        logging(thing1.id, log_message);
         printf("\nÇëÊäÈëÎïÆ·ID(8Î»Êı×Ö):");
         scanf("%d", &thing1.id);
     }
@@ -577,58 +623,118 @@ void input_thing()  //ÎïÆ·ĞÅÏ¢Â¼Èë
 
 void input_yonghu()  //ÓÃ»§Â¼Èë
 {
+    system("cls");
     struct yonghu yonghu1;
+    char password[password_max_length] = {'\0'};
+    char password2[password_max_length] = {'\0'};
     printf("\nÇëÊäÈëÓÃ»§Êı¾İ,ÊäÈë0½áÊøÊäÈë.");
     printf("\nÇëÊäÈëÓÃ»§ID(8Î»Êı×Ö):");
     scanf("%d", &yonghu1.id);
     while (yonghu1.id != 0) {
-        char password[password_max_length];
         printf("\nÇëÊäÈëÓÃ»§ĞÕÃû:");
         scanf("%s", yonghu1.name);
         printf("\nÇëÊäÈëÓÃ»§µç»°ºÅÂë(11Î»ÊÖ»úºÅÂë):");
         scanf("%s", yonghu1.phone);
         printf("\nÇëÊäÈëÓÃ»§µÄÓÊÏäµØÖ·:");
         scanf("%s", yonghu1.email);
-        printf("\nÇëÊäÈëÓÃ»§ÃÜÂë:");
-        scanf("%s", yonghu1.password);
-        password_encryption(yonghu1.password);
+        while (1) {
+            printf("\nÇëÊäÈëÓÃ»§ÃÜÂë:");
+            password_input(password);
+            password_input(password2);
+            if ((strcmp(password, password2)) == 0) {
+                password_encryption(password);
+                strcpy(yonghu1.password, password);
+                break;
+            }
+            printf("\nÁ½´ÎÃÜÂë²»Ò»Ñù£¬ÇëÖØĞÂÊäÈë¡£¡£¡£");
+            strcpy(password, password_clear);
+            strcpy(password2, password_clear);
+        }
         printf("\nÇëÊäÈëÓÃ»§»ı·Ö:");
         scanf("%d", &yonghu1.score);
         yonghu1.next = NULL;
         yonghu1.yhthings = NULL;
         insert_yonghu(yonghu1);
+        sprintf(log_message, "user_input\nname:%s, phone:%s, email:%s, score:%d", yonghu1.name, yonghu1.phone,
+                yonghu1.email,
+                yonghu1.score);
+        logging(yonghu1.id, log_message);
         printf("\nÇëÊäÈëÓÃ»§ID(8Î»Êı×Ö):");
         scanf("%d", &yonghu1.id);
     }
+}
+
+void user_register()  //ÓÃ»§×¢²á
+{
+    system("cls");
+    struct yonghu yonghu1;
+    char password[password_max_length] = {'\0'};
+    char password2[password_max_length] = {'\0'};
+    printf("\nÇëÊäÈëÓÃ»§Êı¾İ,ÊäÈë0½áÊøÊäÈë.");
+    printf("\nÇëÊäÈëÓÃ»§ID(8Î»Êı×Ö):");
+    scanf("%d", &yonghu1.id);
+    while (yonghu1.id != 0) {
+        printf("\nÇëÊäÈëÓÃ»§ĞÕÃû:");
+        scanf("%s", yonghu1.name);
+        printf("\nÇëÊäÈëÓÃ»§µç»°ºÅÂë(11Î»ÊÖ»úºÅÂë):");
+        scanf("%s", yonghu1.phone);
+        printf("\nÇëÊäÈëÓÃ»§µÄÓÊÏäµØÖ·:");
+        scanf("%s", yonghu1.email);
+        while (1) {
+            printf("\nÇëÊäÈëÓÃ»§ÃÜÂë:");
+            password_input(password);
+            printf("\nÇëÈ·ÈÏ\n:");
+            password_input(password2);
+            if ((strcmp(password, password2)) == 0) {
+                password_encryption(password);
+                strcpy(yonghu1.password, password);
+                break;
+            }
+            printf("\nÁ½´ÎÃÜÂë²»Ò»Ñù£¬ÇëÖØĞÂÊäÈë¡£¡£¡£");
+            strcpy(password, password_clear);
+            strcpy(password2, password_clear);
+        }
+        yonghu1.score = 0;
+        yonghu1.next = NULL;
+        yonghu1.yhthings = NULL;
+        insert_yonghu(yonghu1);
+        sprintf(log_message, "user_input\nname:%s, phone:%s, email:%s, score:%d", yonghu1.name, yonghu1.phone,
+                yonghu1.email,
+                yonghu1.score);
+        logging(yonghu1.id, log_message);
+        printf("\nÇëÊäÈëÓÃ»§ID(8Î»Êı×Ö):");
+        scanf("%d", &yonghu1.id);
+    }
+    system("cls");
 }
 
 
 void input_yhthings()  //ÓÃ»§ÎïÆ·ĞÅÏ¢Â¼Èë
 {
     struct yhthings yhthings1;
-    struct things *p88;
+    struct things *thing_p;
     int flag;
     //struct yhthings *cp;
     printf("\nÇëÊäÈëÓÃ»§ÎïÆ·ĞÅÏ¢Êı¾İ,ÊäÈë0½áÊøÊäÈë.");
-    printf("\nÇëÊäÈëÓÃ»§ÎïÆ·ID(8Î»Êı×Ö):");
+    printf("\nÇëÊäÈëÄ¿±êÎïÆ·ID(8Î»Êı×Ö):");
     scanf("%d", &yhthings1.id);
     while (yhthings1.id != 0) {
         //initialize and create
         flag = 0;
-        p88 = head;
-        while (p88 != NULL) {
-            if (p88->id == yhthings1.id)break;
-            p88 = p88->next;
+        thing_p = head;
+        while (thing_p != NULL) {
+            if (thing_p->id == yhthings1.id)break;
+            thing_p = thing_p->next;
         }
-        if (p88 != NULL) {
-            strcpy(yhthings1.time, p88->time);
-            strcpy(yhthings1.name, p88->name);
+        if (thing_p != NULL) {
+            strcpy(yhthings1.time, thing_p->time);
+            strcpy(yhthings1.name, thing_p->name);
         } else {
             flag = 1;
         }
         if (flag) printf("\n¸ÃÎïÆ·»¹Î´µÇ¼Ç£¬ÇëÔÚÎïÆ·ÇøÂ¼ÈëÏêÏ¸ĞÅÏ¢ºóÔÙ½øĞĞÓÃ»§ÎïÆ·µÄÂ¼Èë~");
         else {
-            printf("\nÇëÊäÈëÓÃ»§ID£º");
+            printf("\nÇëÊäÈëÄ¿±êÓÃ»§ID£º");
             scanf("%d", &yhthings1.id1);
             printf("\nÇëÊäÈëÓÃ»§ÎïÆ·Ô­¼Û¸ñ:");
             scanf("%lf", &yhthings1.f_price);
@@ -638,6 +744,9 @@ void input_yhthings()  //ÓÃ»§ÎïÆ·ĞÅÏ¢Â¼Èë
             yhthings1.follow = NULL;
             insert_yhthings1(yhthings1);
             insert_yhthings2(yhthings1);
+            sprintf(log_message, "user_ownership\nname:%s, price_before:%lf, price_now:%lf", thing_p->name,
+                    yhthings1.f_price, yhthings1.n_price);
+            logging(yhthings1.id, log_message);
         }
 
         printf("\nÇëÊäÈëÓÃ»§ÎïÆ·ID(8Î»Êı×Ö):");
@@ -650,9 +759,9 @@ void print_yonghu(struct yonghu *p1)  //Êä³öÓÃ»§ĞÅÏ¢
 {
     struct yhthings *p2;
     printf("\n------------------------------------------------------------");
-    printf("\nID\t>>Ãû×Ö>»ı·Ö>>>>ÊÖ»úºÅÂë>>>>ÓÊ¼ş>>>>>>>>>>>>>");
+    printf("\nID>>>>>>>>Ãû×Ö>>>>>>>>>»ı·Ö>>>>ÊÖ»úºÅÂë>>>>>>>>ÓÊ¼ş>>>>>>>>>>>>>");
     printf("\n------------------------------------------------------------");
-    printf("\n%d %s   %d    %s    %s", p1->id, p1->name, p1->score, p1->phone, p1->email);
+    printf("\n%-8d  %-10s   %-5d    %-11s    %s", p1->id, p1->name, p1->score, p1->phone, p1->email);
     if (p1->yhthings == NULL) {
         printf("\nÔİÎŞËûµÄÎïÆ·ĞÅÏ¢!");
     } else {
@@ -673,9 +782,9 @@ void print_yonghu(struct yonghu *p1)  //Êä³öÓÃ»§ĞÅÏ¢
 void print_things(struct things *p1)  //Êä³öÎïÆ·
 {
     printf("\n------------------------------------------------------------");
-    printf("\nID\t>>Ãû×Ö>>>³¯´ú>¼Û¸ñ>>>>>>>>>");
+    printf("\nID>>>>>>>>Ãû×Ö>>>>>>>>>³¯´ú>>>>>¼Û¸ñ>>>>>>>>>");
     printf("\n------------------------------------------------------------");
-    printf("\n%d %s  %s   %lf", p1->id, p1->name, p1->time, p1->price);
+    printf("\n%-8d  %-10s  %-7s   %lf", p1->id, p1->name, p1->time, p1->price);
     printf("\nÎïÆ·¼ò¶Ì½éÉÜ>>>>>>>>>>>>>>>>>>>");
     printf("\n%s", p1->introduce);
     getchar();
@@ -685,8 +794,9 @@ void print_things(struct things *p1)  //Êä³öÎïÆ·
 
 void skim_things(struct things *head)   //°´ID»òÃû×Ö²é¿´ÎïÆ·ĞÅÏ¢
 {
-    char id[60];
+    char id[60] = {'\0'};
     int id1;
+    bool is_num = 1;
     struct things *p1;
     system("cls");
     if (head == NULL) {
@@ -695,8 +805,14 @@ void skim_things(struct things *head)   //°´ID»òÃû×Ö²é¿´ÎïÆ·ĞÅÏ¢
         printf("\nÇëÊäÈëÒª²éÑ¯µÄÎïÆ·ID»òĞÕÃû(8Î»Êı×Ö»òÕßºº×Ö,ÊäÈë0Í£Ö¹²éÑ¯):");
         scanf("%s", id);
         while (id[0] != '0') {
-            p1 = (struct things *) head;
-            if (strlen(id) == 8) {
+            p1 = head;
+            for (int i = 0; i < strlen(id); i++) {
+                if (!('0' <= id[i] && id[i] <= '9')) {
+                    is_num = 0;
+                    break;
+                }
+            }
+            if (is_num) {    //Èç¹ûÊÇid
                 id1 = idc(id);
                 while (p1->id != id1 && p1->next != NULL && p1->id < id1) {
                     p1 = p1->next;
@@ -710,22 +826,21 @@ void skim_things(struct things *head)   //°´ID»òÃû×Ö²é¿´ÎïÆ·ĞÅÏ¢
                     scanf("%s", id);
                 }
             } else {
-                while (strcmp(id, p1->name) != 0 && p1 != NULL) {
+                while (p1 != NULL && strcmp(id, p1->name) != 0)    //ÏÈÅĞ¶ÏÊÇ·ñµ½ÁËÁ´±íÎ²£¬·ñÕß²éÑ¯²»µ½ÊÇ»á³ö±ÀÀ£
                     p1 = p1->next;
-                }
-                if (strcmp(id, p1->name) == 0) {
-                    print_things(p1);
-                    printf("\n¼ÌĞø²éÑ¯ÇëÔÙ´ÎÊäÈëÎïÆ·ID»òÃû³Æ(8Î»Êı×Ö»òÕßºº×Ö,ÊäÈë0Í£Ö¹²éÑ¯):");
-                    scanf("%s", id);
-                } else {
+                if (p1 == NULL) {
                     printf("\nÃ»ÓĞÕâÏîÎïÆ·Å¶!ÇëÖØĞÂÊäÈëÎïÆ·ID(8Î»Êı×Ö,ÊäÈë0Í£Ö¹²éÑ¯):");
                     scanf("%s", id);
+                } else {
+                    print_things(p1);
+                    printf("\n¼ÌĞø²éÑ¯ÇëÔÙ´ÎÊäÈëÎïÆ·ID»òÃû³Æ(8Î»Êı×Ö»òÕßºº×Ö,ÊäÈë0Í£Ö¹²éÑ¯):");
+                    fflush(stdin);
+                    scanf("%s", id);
                 }
-            }
 
+            }
         }
     }
-
 }
 
 
@@ -755,6 +870,7 @@ void password_yonghu()//ÓÃ»§IDÓëÃÜÂëÑéÖ¤
     char password1[password_max_length] = {'\0'};
     int id;
     struct yonghu *p;
+    system("cls");
     do {
         printf("\n\t\t\t|&|*************ÓÃ»§µÇÂ¼**************|&|");
         printf("\n\t\t\t|&|----------------------------------|&|");
@@ -768,9 +884,11 @@ void password_yonghu()//ÓÃ»§IDÓëÃÜÂëÑéÖ¤
         printf("\n\t\t\t|&|                     ++++++       |&|");
         printf("\n\t\t\t|&|----------------------------------|&|");
 
-        printf("\nÇëÊäÈëÓÃ»§ID(8Î»Êı×Ö):");
+        printf("\nÇëÊäÈëÓÃ»§ID(×î¶à8Î»Êı×Ö£¬0ÎªÍË³ö):");
         scanf("%d", &id);
         fflush(stdin);
+        if (id == 0)
+            return;
         printf("\nÇëÊäÈëÃÜÂë(24Î»ÒÔÄÚ):");
         password_input(password1);
         password_encryption(password1);
@@ -783,10 +901,14 @@ void password_yonghu()//ÓÃ»§IDÓëÃÜÂëÑéÖ¤
         if (p != NULL) {
             if (strcmp(p->password, password1) == 0) {
                 yonghu_ui(p);
+                sprintf(log_message, "user_login\nlogin successfully");
+                logging(p->id, log_message);
                 break;
             } else {
                 z++;
                 printf("\nÕËºÅ»òÃÜÂëÓĞÎó£¬ÇëÖØĞÂÊäÈë(Äã»¹ÓĞ%d´Î»ú»á)£º", 5 - z);
+                sprintf(log_message, "user_login\nlogin failed");
+                logging(p->id, log_message);
                 getchar();
                 fflush(stdin);
             }
@@ -817,9 +939,11 @@ void password_adm()//¹ÜÀíÔ±IDÓëÃÜÂëÑéÖ¤
         printf("\n\t\t\t|&|                 +  +++++++++     |&|");
         printf("\n\t\t\t|&|                     ++++++       |&|");
         printf("\n\t\t\t|&|----------------------------------|&|");
-        printf("\nÇëÊäÈë¹ÜÀíÔ±ID(8Î»Êı×Ö):");
+        printf("\nÇëÊäÈë¹ÜÀíÔ±ID(8Î»Êı×Ö£¬0ÎªÍË³ö):");
         scanf("%d", &id);
         fflush(stdin);
+        if (id == 0)
+            return;
         printf("\nÇëÊäÈëÃÜÂë(24Î»ÒÔÄÚ):");
         password_input(password1);
         password_encryption(password1);
@@ -831,10 +955,14 @@ void password_adm()//¹ÜÀíÔ±IDÓëÃÜÂëÑéÖ¤
         }
         if (p != NULL) {
             if (strcmp(p->password, password1) == 0) {
+                sprintf(log_message, "admin_login\nlogin successfully");
+                logging(p->id, log_message);
                 adm_ui_1();
                 break;
             } else {
                 z++;
+                sprintf(log_message, "admin_login\nlogin failed");
+                logging(p->id, log_message);
                 printf("\nÕËºÅ»òÃÜÂëÓĞÎó£¬ÇëÖØĞÂÊäÈë(Äã»¹ÓĞ%d´Î»ú»á)£º", 5 - z);
                 getchar();
                 fflush(stdin);
@@ -866,11 +994,15 @@ void modify_yonghu(struct yonghu *p1)// ÓÃ»§ĞŞ¸Ä×Ô¼ºĞÅÏ¢
         case 1:
             printf("ÇëÊäÈëÓÊ¼ş:");
             scanf("%s", p1->email);
+            sprintf(log_message, "modify_user\nchange email to%s", p1->email);
+            logging(p1->id, log_message);
             fflush(stdin);
             break;
         case 2:
             printf("ÇëÊäÈëµç»°ºÅÂë:");
             scanf("%s", p1->phone);
+            sprintf(log_message, "modify_user\nchange phone to%s", p1->phone);
+            logging(p1->id, log_message);
             fflush(stdin);
             break;
         default :
@@ -880,7 +1012,7 @@ void modify_yonghu(struct yonghu *p1)// ÓÃ»§ĞŞ¸Ä×Ô¼ºĞÅÏ¢
     printf("\nÒÑÍê³ÉĞŞ¸Ä¡£°´ÈÎÒâ¼ü·µ»Ø¡£");
     getchar();
     getchar();
-
+    system("cls");
 }
 
 
@@ -890,7 +1022,7 @@ void modify_yonghu_adm()//¹ÜÀíÔ±½øÈëÄ³Ò»ÓÃ»§ÏµÍ³ ĞŞ¸ÄÓÃ»§ĞÅÏ¢ ÈçÃÜÂë
     int id;
     p1 = head_yonghu;
     system("cls");
-    printf("\n¹ÜÀíÔ±sama,ÇëÊäÈëÒªĞŞ¸ÄÓÃ»§µÄID(8Î»id,ÊäÈë0Í£Ö¹ÊäÈë):");
+    printf("\nÇëÊäÈëÒªĞŞ¸ÄÓÃ»§µÄID(8Î»id,ÊäÈë0Í£Ö¹ÊäÈë):");
     scanf("%d", &id);
     fflush(stdin);
     while (p1 != NULL) {
@@ -899,9 +1031,10 @@ void modify_yonghu_adm()//¹ÜÀíÔ±½øÈëÄ³Ò»ÓÃ»§ÏµÍ³ ĞŞ¸ÄÓÃ»§ĞÅÏ¢ ÈçÃÜÂë
     }
     if (p1 != NULL) {
         if (p1->id == id) yonghu_ui(p1);
+        sprintf(log_message, "admin_modify_user_info\n");
+        logging(p1->id, log_message);
     } else
         printf("\nÕâÎ»ÓÃ»§»¹Ã»³öÏÖ¹ıàç~");
-
 }
 
 
@@ -938,11 +1071,14 @@ void del_yonghu()//É¾³ıÓÃ»§ĞÅÏ¢
                 }
                 p22 = p2->next;
                 if (p3 != NULL) {
+                    sprintf(log_message, "user_delete\n");
+                    logging(id, log_message);
                     pfree_yhthings(p1, p3, (*p2));
                 }
                 p2 = p22;
             }
             printf("\n³É¹¦É¾³ı¸ÃÓÃ»§ĞÅÏ¢.");
+
         }
 
         p1 = p11 = head_yonghu;
@@ -991,6 +1127,8 @@ void del_yhthings()//É¾³ıÓÃ»§ÎïÆ·ĞÅÏ¢
                     p = p->next;
                 }
                 if (p != NULL && p_yonghu != NULL) {
+                    sprintf(log_message, "user_ownership_delete\ndeleted_thing_id:", yhthings1.id);
+                    logging(p_yonghu->id, log_message);
                     pfree_yhthings(p_yonghu, p_things, yhthings1);
                     break;
                 }
@@ -1058,6 +1196,7 @@ void pfree_yhthings(struct yonghu *p_yonghu, struct things *p_things, struct yht
 void skim_yonghu(struct yonghu *head)   //°´ID»òÃû×Ö²é¿´ÓÃ»§ĞÅÏ¢
 {
     char id[60];
+    bool is_num = 1;
     int id1;
     struct yonghu *p1;
     system("cls");
@@ -1067,8 +1206,14 @@ void skim_yonghu(struct yonghu *head)   //°´ID»òÃû×Ö²é¿´ÓÃ»§ĞÅÏ¢
         printf("\nÇëÊäÈëÒª²éÑ¯µÄÓÃ»§ID»òĞÕÃû(8Î»Êı×Ö»òÕßºº×Ö,ÊäÈë0Í£Ö¹²éÑ¯):");
         scanf("%s", id);
         while (id[0] != '0') {
-            p1 = (struct yonghu *) head;
-            if (strlen(id) == 8) {
+            for (int i = 0; i < strlen(id); i++) {
+                if (!('0' <= id[i] && id[i] <= '9')) {
+                    is_num = 0;
+                    break;
+                }
+            }
+            p1 = head;
+            if (is_num) {
                 id1 = idc(id);
                 while (p1->id != id1 && p1->next != NULL && p1->id < id1) {
                     p1 = p1->next;
@@ -1082,10 +1227,10 @@ void skim_yonghu(struct yonghu *head)   //°´ID»òÃû×Ö²é¿´ÓÃ»§ĞÅÏ¢
                     scanf("%s", id);
                 }
             } else {
-                while (strcmp(id, p1->name) != 0 && p1 != NULL) {
+                while (p1 != NULL && strcmp(id, p1->name) != 0) {
                     p1 = p1->next;
                 }
-                if (strcmp(id, p1->name) == 0) {
+                if (p1 != NULL) {
                     print_yonghu(p1);
                     printf("\n¼ÌĞø²éÑ¯ÇëÔÙ´ÎÊäÈëÓÃ»§ID»òĞÕÃû(8Î»Êı×Ö»òÕßºº×Ö,ÊäÈë0Í£Ö¹²éÑ¯):");
                     scanf("%s", id);
@@ -1127,6 +1272,7 @@ void skim_yonghu_all()//²é¿´ËùÓĞÓÃ»§»ı·Ö¼°ËùÓµÓĞÎïÆ·
     }
     getchar();
     getchar();
+    system("cls");
 }
 
 
@@ -1144,7 +1290,6 @@ void adm_password()//¹ÜÀíÔ±ÃÜÂëĞŞ¸Ä
         printf("\nÇëÊäÈëÔ­ÃÜÂë£¨10Î»ÒÔÄÚ£©:");
         password_input(password0);
         password_encryption(password0);
-        cout << password0 << endl;
         fflush(stdin);
         p = head_adm;
         while (p != NULL) {
@@ -1156,6 +1301,8 @@ void adm_password()//¹ÜÀíÔ±ÃÜÂëĞŞ¸Ä
                 break;
             } else {
                 z++;
+                sprintf(log_message, "admin_password_changing\nfail  reason: password wrong");
+                logging(p->id, log_message);
                 printf("\nÃÜÂë´íÎóÇëÖØĞÂÊäÈë(Äã»¹ÓĞ%d´Î»ú»á).", 5 - z);
             }
         }
@@ -1172,12 +1319,18 @@ void adm_password()//¹ÜÀíÔ±ÃÜÂëĞŞ¸Ä
             if (strcmp(password0, password2) == 0) {
                 password_encryption(password0);
                 strcpy(p->password, password0);
+                sprintf(log_message, "admin_password_changing\nsuccessfully");
+                logging(p->id, log_message);
                 break;
             } else {
+                sprintf(log_message,
+                        "admin_password_changing\nfailed  reason:new passwords ard not the same in confirmation");
+                logging(p->id, log_message);
                 printf("\nÁ½´ÎÃÜÂë²»Ò»ÖÂ£¬ÇëÖØĞÂÊäÈë,²»ÔÙĞŞ¸ÄÇëÊäÈë0,¼ÌĞøĞŞ¸ÄÇëÊäÈë1.");
                 scanf("%d", &z);
             }
         } while (z != 0);
+        system("cls");
     } else exit(0);
 }
 
@@ -1260,12 +1413,14 @@ void yonghu_ui(struct yonghu *p)//ÓÃ»§½çÃæ
                 printf("\nÎŞĞ§Ñ¡Ïî!");
         }
     } while (z != 0);
+    system("cls");
 }
 
 
 void st_password_yonghu(struct yonghu *p)//ÓÃ»§ÃÜÂëĞŞ¸Ä
 {
-    char password1[11], password2[11];
+    char password1[11] = {'\0'};
+    char password2[11] = {'\0'};
     int z = 1;
     system("cls");
     do {
@@ -1278,16 +1433,20 @@ void st_password_yonghu(struct yonghu *p)//ÓÃ»§ÃÜÂëĞŞ¸Ä
         if (strcmp(password1, password2) == 0) {
             password_encryption(password1);
             strcpy(p->password, password1);
+            sprintf(log_message, "user_password_changing\nsuccessfully");
+            logging(p->id, log_message);
             printf("\nÃÜÂëĞŞ¸Ä³É¹¦!");
             break;
         } else {
             printf("\nÁ½´ÎÃÜÂë²»Ò»ÖÂ£¬ÇëÖØĞÂÊäÈë,²»ÔÙĞŞ¸ÄÇëÊäÈë0,¼ÌĞøĞŞ¸ÄÇëÊäÈëÈÎºÎÆäÓàÖµ.");
+            sprintf(log_message,
+                    "user_password_changing\nfailed  reason:new passwords ard not the same in confirmation");
+            logging(p->id, log_message);
             scanf("%d", &z);
             fflush(stdin);
         }
     } while (z != 0);
-
-
+    system("cls");
 }
 
 
@@ -1312,6 +1471,7 @@ void skim_thing_all()//²é¿´ËùÓĞÎïÆ·ĞÅÏ¢
     }
     getchar();
     getchar();
+    system("cls");
 }
 
 
@@ -1341,6 +1501,7 @@ void show_thing_with_kind()//²é¿´ËùÓĞÎïÆ·ĞÅÏ¢
     }
     getchar();
     getchar();
+    system("cls");
 }
 
 
@@ -1361,6 +1522,7 @@ void skim_yhthings(struct yonghu *p)//²é¿´ËùÓĞÓÃ»§ÎïÆ·ĞÅÏ¢
     }
     getchar();
     getchar();
+    system("cls");
 }
 
 void skim_yhthings1()//²é¿´ËùÓĞÓÃ»§ÎïÆ·ĞÅÏ¢
@@ -1373,6 +1535,7 @@ void skim_yhthings1()//²é¿´ËùÓĞÓÃ»§ÎïÆ·ĞÅÏ¢
     printf("\n-------------------------------------------------------------------");
     while (p1 != NULL) {
         printf("\n\t\tÎïÆ·ID£º  %d", p1->id);
+        printf("\n\t\tËùÓĞÈËID£º  %s", p1->yonghu_name);
         printf("\n\t\tÎïÆ·Ãû³Æ£º%s", p1->name);
         printf("\n\t\tÎïÆ·³¯´ú£º%s", p1->time);
         printf("\n\t\tÎïÆ·¼Û¸ñ£º%lf\n", p1->n_price);
@@ -1380,6 +1543,7 @@ void skim_yhthings1()//²é¿´ËùÓĞÓÃ»§ÎïÆ·ĞÅÏ¢
     }
     getchar();
     getchar();
+    system("cls");
 }
 
 
@@ -1465,26 +1629,36 @@ void modify_thing_adm()// ¹ÜÀíÔ±ĞŞ¸ÄÎïÆ·ĞÅÏ¢
                 case 1:
                     printf("ÇëÊäÈëĞÂÃû×Ö:");
                     scanf("%s", p1->name);
+                    sprintf(log_message, "thing_name_changing\n new_name:%s", p1->name);
+                    logging(p1->id, log_message);
                     fflush(stdin);
                     break;
                 case 2:
                     printf("ÇëÊäÈë³¯´ú£»");
                     scanf("%s", p1->time);
+                    sprintf(log_message, "thing_time_changing\n new_time:%s", p1->time);
+                    logging(p1->id, log_message);
                     fflush(stdin);
                     break;
                 case 3:
                     printf("ÇëÊäÈë¼Û¸ñ£º");
                     scanf("%lf", &p1->price);
+                    sprintf(log_message, "thing_price_changing\n new_price:%lf", p1->price);
+                    logging(p1->id, log_message);
                     fflush(stdin);
                     break;
                 case 4:
                     printf("ÇëÊäÈëĞÂ½éÉÜ£º");
                     scanf("%s", p1->introduce);
+                    sprintf(log_message, "thing_introduction_changing\n successfully");
+                    logging(p1->id, log_message);
                     fflush(stdin);
                     break;
                 case 5:
                     printf("ÇëÊäÈëĞÂÎïÆ·ÖÖÀà,ĞéÄâÎïÆ·Îª0£¬ÊµÌåÎïÆ·Îª1£º");
-                    scanf("%d", p1->type);
+                    scanf("%d", &p1->type);
+                    sprintf(log_message, "thing_type_changing\n new_price:%d", p1->type);
+                    logging(p1->id, log_message);
                     fflush(stdin);
                     break;
                 default :
@@ -1494,10 +1668,9 @@ void modify_thing_adm()// ¹ÜÀíÔ±ĞŞ¸ÄÎïÆ·ĞÅÏ¢
             printf("\nÒÑÍê³ÉĞŞ¸Ä¡£°´ÈÎÒâ¼ü·µ»Ø¡£");
             getchar();
             getchar();
-
+            system("cls");
         } else
             printf("¸ÃÎïÆ·²»´æÔÚ¡£");
-
     }
 }
 
@@ -1573,7 +1746,7 @@ void del_things()//É¾³ıÓÃ»§ĞÅÏ¢
     int id;
     int flag = 0;
     system("cls");
-    printf("\nÇëÊäÈëÒªÉ¾³ıÎïÆ·µÄID(8Î»Ñ§ºÅ,ÊäÈë0ÎªÍ£Ö¹É¾³ı):");
+    printf("\nÇëÊäÈëÒªÉ¾³ıÎïÆ·µÄID(8Î»,ÊäÈë0ÎªÍ£Ö¹É¾³ı):");
     scanf("%d", &id);
     fflush(stdin);
     while (id != 0) {
@@ -1625,6 +1798,8 @@ void del_things()//É¾³ıÓÃ»§ĞÅÏ¢
                 if (p1->id == id) {
                     if (p1 == p11) head = p1->next;
                     else p11->next = p1->next;
+                    sprintf(log_message, "thing_delete\nsuccessfully");
+                    logging(p1->id, log_message);
                     free(p1);
                     thing_info.num--;
                     break;
@@ -1636,7 +1811,7 @@ void del_things()//É¾³ıÓÃ»§ĞÅÏ¢
         } else {
             printf("\n±§Ç¸Ã»ÓĞ¸ÃÎïÆ·~");
         }
-        printf("\nÇëÊäÈëÒªÉ¾³ıÑ§ÉúµÄID(8Î»Ñ§ºÅ,ÊäÈë0ÎªÍ£Ö¹É¾³ı):");
+        printf("\nÇëÊäÈëÒªÉ¾³ıÎïÆ·µÄID(8Î»Ñ§ºÅ,ÊäÈë0ÎªÍ£Ö¹É¾³ı):");
         scanf("%d", &id);
     }
 }
@@ -1666,10 +1841,14 @@ void input_adm()  //¹ÜÀíÔ±Â¼Èë
         adm1.next = NULL;
         adm1.yhthings = NULL;
         insert_adm(adm1);
+        sprintf(log_message, "admin_input\nname:%s, phone:%s, email:%s, score:%d", adm1.name, adm1.phone, adm1.email,
+                adm1.score);
+        logging(adm1.id, log_message);
         //select_n(p1);
         printf("\nÇëÊäÈë¹ÜÀíÔ±ID(8Î»Êı×Ö):");
         scanf("%d", &adm1.id);
     }
+    system("cls");
 }
 
 
@@ -1682,16 +1861,16 @@ void adm_ui_1()//¹ÜÀíÔ±½çÃæ1
         printf("\n\t\t\t--------------------------------\n");
         printf("\t\t\t+            ¹ÜÀíÔ±            |\n");
         printf("\t\t\t--------------------------------\n");
-        printf("\t\t\t+    [1]----Â¼ÈëÎïÆ·ĞÅÏ¢       |\n");
-        printf("\t\t\t+    [2]----Â¼ÈëÓÃ»§ĞÅÏ¢       |\n");
-        printf("\t\t\t+    [3]----Â¼Èë¹ÜÀíÔ±ĞÅÏ¢     |\n");
-        printf("\t\t\t+    [4]----²éÑ¯ÎïÆ·ĞÅÏ¢       |\n");
-        printf("\t\t\t+    [5]----²éÑ¯ÓÃ»§ĞÅÏ¢       |\n");
-        printf("\t\t\t+    [6]----É¾³ıÎïÆ·ĞÅÏ¢       |\n");
-        printf("\t\t\t+    [7]----É¾³ıÓÃ»§ĞÅÏ¢       |\n");
-        printf("\t\t\t+    [8]----Â¼ÈëÓÃ»§ÎïÆ·ĞÅÏ¢   |\n");
-        printf("\t\t\t+    [9]----ÏÂÒ»Ò³             |\n");
-        printf("\t\t\t+    [0]----ÍË³öÏµÍ³           |\n");
+        printf("\t\t\t+    [1]----Â¼ÈëÎïÆ·ĞÅÏ¢       \n");
+        printf("\t\t\t+    [2]----Â¼ÈëÓÃ»§ĞÅÏ¢       \n");
+        printf("\t\t\t+    [3]----Â¼Èë¹ÜÀíÔ±ĞÅÏ¢     \n");
+        printf("\t\t\t+    [4]----²éÑ¯ÎïÆ·ĞÅÏ¢       \n");
+        printf("\t\t\t+    [5]----²éÑ¯ÓÃ»§ĞÅÏ¢       \n");
+        printf("\t\t\t+    [6]----É¾³ıÎïÆ·ĞÅÏ¢       \n");
+        printf("\t\t\t+    [7]----É¾³ıÓÃ»§ĞÅÏ¢       \n");
+        printf("\t\t\t+    [8]----Â¼ÈëÓÃ»§ÎïÆ·ĞÅÏ¢   \n");
+        printf("\t\t\t+    [9]----ÏÂÒ»Ò³             \n");
+        printf("\t\t\t+    [0]----ÍË³öÏµÍ³           \n");
         printf("\t\t\t--------------------------------\n");
         printf("ÇëÊäÈëÄúµÄÑ¡Ôñ£º");
         scanf("%d", &z);
@@ -1743,14 +1922,15 @@ void adm_ui_2()//¹ÜÀíÔ±½çÃæ2
         printf("\n\t\t\t-----------------------------------\n");
         printf("\t\t\t+            ¹ÜÀíÔ±                |\n");
         printf("\t\t\t--------------------------------\n");
-        printf("\t\t\t+  [1]----ĞŞ¸ÄÎïÆ·ĞÅÏ¢              |\n");
-        printf("\t\t\t+  [2]----ĞŞ¸ÄÓÃ»§ĞÅÏ¢              |\n");
-        printf("\t\t\t+  [3]----Í³¼ÆËùÓĞÎïÆ·ĞÅÏ¢           |\n");
-        printf("\t\t\t+  [4]----¸ù¾İÖÖÀàÍ³¼ÆËùÓĞÎïÆ·ĞÅÏ¢    |\n");
-        printf("\t\t\t+  [5]----Í³¼ÆËùÓĞÓÃ»§ĞÅÏ¢           |\n");
-        printf("\t\t\t+  [6]----Í³¼ÆËùÓĞÓÃ»§ÎïÆ·ĞÅÏ¢       |\n");
-        printf("\t\t\t+  [7]----¹ÜÀíÔ±ÃÜÂëĞŞ¸Ä            |\n");
-        printf("\t\t\t+  [0]---- ÉÏÒ»Ò³                  |\n");
+        printf("\t\t\t+  [1]----ĞŞ¸ÄÎïÆ·ĞÅÏ¢              \n");
+        printf("\t\t\t+  [2]----ĞŞ¸ÄÓÃ»§ĞÅÏ¢              \n");
+        printf("\t\t\t+  [3]----Í³¼ÆËùÓĞÎïÆ·ĞÅÏ¢           \n");
+        printf("\t\t\t+  [4]----¸ù¾İÖÖÀàÍ³¼ÆËùÓĞÎïÆ·ĞÅÏ¢    \n");
+        printf("\t\t\t+  [5]----Í³¼ÆËùÓĞÓÃ»§ĞÅÏ¢           \n");
+        printf("\t\t\t+  [6]----Í³¼ÆËùÓĞÓÃ»§ÎïÆ·ĞÅÏ¢       \n");
+        printf("\t\t\t+  [7]----¹ÜÀíÔ±ÃÜÂëĞŞ¸Ä            \n");
+        printf("\t\t\t+  [8]----ÏÔÊ¾ÈÕÖ¾                 \n");
+        printf("\t\t\t+  [0]---- ÉÏÒ»Ò³                  \n");
         printf("\t\t\t-----------------------------------\n");
         printf("ÇëÊäÈëÄúµÄÑ¡Ôñ£º");
         scanf("%d", &z);
@@ -1772,11 +1952,14 @@ void adm_ui_2()//¹ÜÀíÔ±½çÃæ2
             case 5 :
                 skim_yonghu_all();
                 break;
+            case 6:
+                skim_yhthings1();
+                break;
             case 7 :
                 adm_password();
                 break;
-            case 6:
-                skim_yhthings1();
+            case 8 :
+                show_log();
                 break;
             default:
                 printf("\n¶Ô²»Æğ£¬Ã»ÓĞÕâ¸öÑ¡Ïî!");
@@ -1825,6 +2008,7 @@ void buy(struct yonghu *p)//¾º¹º×Ô¼ºÏëÒªµÄÎïÆ·
     printf("ÇëÊäÈëÄúÒª¾º¹ºµÄÎïÆ·id(ÊäÈë0Ôò·µ»ØÉÏÒ»²ã²Ëµ¥£©£º");
     scanf("%d", &id);
     do {
+        system("cls");
         flag = 0;
         p3 = head_pai;
         while (p3 != NULL && p3->id < id) {
@@ -1861,8 +2045,12 @@ void buy(struct yonghu *p)//¾º¹º×Ô¼ºÏëÒªµÄÎïÆ·
                 if (tt1 < tt2) flag = 2;
             }
             if (flag == 2) {
+                sprintf(log_message, "buying\nfailed reason:can't buy ahead of time");
+                logging(p3->id, log_message);
                 printf("»¹²»ÄÜ¾ºÅÄ´ËÎïÆ·ÁËßÏ~");
             } else if (flag == 1) {
+                sprintf(log_message, "buying\nfailed reason:time up");
+                logging(p3->id, log_message);
                 printf("ÒÑ¾­²»ÄÜ¾ºÅÄ´ËÎïÆ·ÁËßÏ~");
             } else {
                 p8 = (struct paimairen *) malloc(sizeof(struct paimairen));
@@ -1872,6 +2060,8 @@ void buy(struct yonghu *p)//¾º¹º×Ô¼ºÏëÒªµÄÎïÆ·
                     p9->id = p->id;
                     printf("ÇëÊäÈëÄúµÄ³ö¼Û£º");
                     scanf("%lf", &p9->price);
+                    sprintf(log_message, "buying\nsuccessfully, now_price:%lf", p9->price);
+                    logging(p9->id, log_message);
                     p3->ren = p9;
                     p9->next = NULL;
                 } else {
@@ -1887,12 +2077,18 @@ void buy(struct yonghu *p)//¾º¹º×Ô¼ºÏëÒªµÄÎïÆ·
                         p9->id = p->id;
                         printf("ÇëÊäÈëÄúµÄ³ö¼Û£º");
                         scanf("%lf", &p9->price);
+                        sprintf(log_message, "buying\nsuccessfully,thing_id:%d , pre_price:%lf, now_price:%lf", p9->id,
+                                p3->n_price, p9->price);
+                        logging(p9->id, log_message);
                         p8->next = p9;
                         p6 = p9;
                         p6->next = NULL;
                     } else if (p6->id == p->id) {
                         printf("ÇëÊäÈëÄúµÄ³ö¼Û£º");
                         scanf("%lf", &p6->price);
+                        sprintf(log_message, "buying\nsuccessfully,thing_id:%d , pre_price:%lf, now_price:%lf", p9->id,
+                                p3->n_price, p9->price);
+                        logging(p9->id, log_message);
                     }
                 }
                 printf("ÄúµÄ¾ºÅÄÇëÇóÒÑ¾­Ìá½»£¬ÇëÔÚ¾ºÅÄ½áÊøºó²é¿´½á¹û¡£");
@@ -1901,6 +2097,7 @@ void buy(struct yonghu *p)//¾º¹º×Ô¼ºÏëÒªµÄÎïÆ·
         printf("ÇëÊäÈëÄúÒª¾º¹ºµÄÎïÆ·id(ÊäÈë0Ôò·µ»ØÉÏÒ»²ã²Ëµ¥£©£º");
         scanf("%d", &id);
     } while (id != 0);
+    system("cls");
     return;
 
 }
@@ -1934,6 +2131,7 @@ void checkpai(struct yonghu *p)//²é¿´¿ÉÒÔ¾º¹ºµÄÎïÆ·µÄÏà¹ØĞÅÏ¢
     }
     getchar();
     getchar();
+    system("cls");
 }
 
 
@@ -2186,12 +2384,10 @@ void insert_paimaipin1(struct paimaipin wupin1) {
 void jingpai(struct yonghu *p)//¾ºÅÄ¹¦ÄÜ
 {
     int z = 1;
-    system("cls");
     time_t t;
-
     do {
         t = time(NULL);
-
+        system("cls");
         printf("\n\tÏµÍ³µ±Ç°Ê±¼äÎª£º");
         printf(ctime(&t));
         printf("\n\t\t     ****************************** ");
@@ -2227,6 +2423,7 @@ void jingpai(struct yonghu *p)//¾ºÅÄ¹¦ÄÜ
 
         }
     } while (z != 0);
+    system("cls");
     return;
 
 
@@ -2243,7 +2440,6 @@ void paimai(struct yonghu *p)//ÓÃ»§ÅÄÂôÎïÆ·
     t = time(NULL);
     printf("\n\tÏµÍ³µ±Ç°Ê±¼äÎª£º");
     printf(ctime(&t));
-
     printf("\nÇëÊäÈëÒªÅÄÂôµÄÉÌÆ·±àºÅ£º");
     scanf("%d", &id);
     p1 = p->yhthings;
@@ -2274,23 +2470,35 @@ void paimai(struct yonghu *p)//ÓÃ»§ÅÄÂôÎïÆ·
         printf("\nÇëÊäÈëÎïÆ·µÄ¼òµ¥½éÉÜ£º");
         scanf("%s", wupin1.introduce);
         insert_paimaipin1(wupin1);
+        sprintf(log_message, "auction_add\nname:%s", wupin1.name);
+        logging(wupin1.id, log_message);
         printf("\nÄúµÄÎïÆ·ÒÑ¾­½øÈëÅÄÂôÎïÆ·ÁĞ±íÖĞ£¬ÇëÓÚÎïÆ·ÅÄÂô½áÊøºó²é¿´ÎïÆ·½á¹û¡£");
 
     } else {
         printf("\nÄúÃ»ÓĞÈ¨Á¦ÅÄÂô¸ÃÎïÆ·»ò¸ÃÎïÆ·²»´æÔÚ£¡");
+        sprintf(log_message, "auction_add\nfailed  reason: unauthenticated or thing does not exist");
         printf("\nÈçÈÔĞèÒªÅÄÂôÇë»Øµ½ÓÃ»§½çÃæÌí¼ÓÓÃ»§ÎïÆ·£¡");
     }
+    system("cls");
     return;
 
 
 }
+
+
+
+//void pairesult2(struct yonghu *p){
+//
+//}
+
+
 
 void pairesult(struct yonghu *p)//ÓÃ»§ÅÄÂôµÄÎïÆ·µÄ½á¹û£¬²¢É¾³ıÓÃ»§ÎïÆ·ĞÅÏ¢£»
 {
 
     struct paimaipin *p3, *p5;
     time_t t;
-    int dd1, dd2, tt1, tt2, flag;
+    int dd1, dd2, tt1, tt2, flag = 0;
     struct tm *p7;
     p3 = head_pai;
     p5 = head_pai;
@@ -2356,6 +2564,7 @@ void pairesult(struct yonghu *p)//ÓÃ»§ÅÄÂôµÄÎïÆ·µÄ½á¹û£¬²¢É¾³ıÓÃ»§ÎïÆ·ĞÅÏ¢£»
         p5 = p3;
         p3 = p3->next;
     }
+    sleep(3);
     return;
 }
 
@@ -2364,7 +2573,6 @@ void jinggou(struct yonghu *p)//¾º¹ºÎïÆ·¹¦ÄÜ½çÃæ
     int z;
     system("cls");
     time_t t;
-
     do {
         t = time(NULL);
         printf("\n\tÏµÍ³µ±Ç°Ê±¼äÎª£º");
@@ -2403,6 +2611,7 @@ void jinggou(struct yonghu *p)//¾º¹ºÎïÆ·¹¦ÄÜ½çÃæ
                 break;
         }
     } while (z != 0);
+    system("cls");
     return;
 
 
@@ -2484,9 +2693,9 @@ void zuigaojia(struct paimaipin *p, struct yonghu *ppp)//»ñµÃ¾º¹ºµÄÉÌÆ·½á¹û£¬²¢Í
             p8.n_price = max;
             insert_yhthings1(p8);
             printf("\n¸ÃÎïÆ·ÒÑ±»Äú¾ºµÃ£¬¾ºµÃµÄ¼ÛÇ®ÊÇ£º%lf\n", max);
-
         }
     }
+    system("cls");
     return;
 }
 
@@ -2497,16 +2706,24 @@ void help()//°ïÖú
     printf("\n\t\t*+*\t\t°ï  Öú \t\t*+*");
     printf("\n\t\t***************************************");
     printf("\n\t\t*+*(n(*¨R¨Œ¨Q*)n)");
+    printf("\n\t\t*+*ÓÃ»§¿ÉÒÔÔÚÈÎÒâ½çÃæÊäÈë0ÍË³öµ±Ç°²Ù×÷");
+    printf("\n\t\t*+*µÇÂ¼ºó²ÅÄÜ½øĞĞ¾ºÅÄ");
+    printf("\n\t\t*+*Î´µÇÂ¼µÄÓÃ»§Çë×¢²á»òÕßÁªÏµ¹ÜÀíÔ±½øĞĞÏà¹ØĞÅÏ¢µÇ¼Ç");
+    printf("\n\t\t*+*Èç¹ûÒª½«×Ô¼ºµÄÎïÆ·¹ÒÉÏ¾ºÅÄÆ½Ì¨£¬ÇëÁªÏµ¹ÜÀíÔ±");
     printf("\n\t\t****************************************");
     develop();
     getchar();
     getchar();
+    system("cls");
 }
 
 
 void develop()//×÷Õß
 {
     printf("\n\t\t       Ross");
+    printf("\n\n2Á½ÃëºóÍË³ö");
+    sleep(2);
+    system("cls");
 }
 
 
@@ -2520,9 +2737,8 @@ int main() {
         if (ch == 'y') input_adm();
         else exit(0);
     }
-
-    system("cls");
     do {
+        system("cls");
         cout << " \t__          ________ _      _____ ____  __  __ ______ \n";
         cout << " \t\\ \\        / /  ____| |    / ____/ __ \\|  \\/  |  ____|\n";
         cout << " \t \\ \\  /\\  / /| |__  | |   | |   | |  | | \\  / | |__   \n";
@@ -2538,10 +2754,11 @@ int main() {
         printf("\n\t\t\t--------------------------------\n");
         printf("\t\t\t+            Ö÷²Ëµ¥            |\n");
         printf("\t\t\t--------------------------------\n");
-        printf("\t\t\t+    [1]----ÓÃ»§µÇÂ¼           |\n");
-        printf("\t\t\t+    [2]----¹ÜÀíÔ±µÇÂ¼         |\n");
-        printf("\t\t\t+    [3]----°ïÖú               |\n");
-        printf("\t\t\t+    [0]----ÍË³öÏµÍ³           |\n");
+        printf("\t\t\t+    [1]----ÓÃ»§µÇÂ¼           \n");
+        printf("\t\t\t+    [2]----ÓÃ»§×¢²á           \n");
+        printf("\t\t\t+    [3]----¹ÜÀíÔ±µÇÂ¼         \n");
+        printf("\t\t\t+    [4]----°ïÖú               \n");
+        printf("\t\t\t+    [0]----ÍË³öÏµÍ³           \n");
         printf("\t\t\t--------------------------------\n");
         printf("\n\t    ÇëÊäÈëÄúµÄÑ¡Ôñ£º");
         scanf("%d", &z);
@@ -2552,15 +2769,19 @@ int main() {
                 password_yonghu();
                 break;
             case 2 :
-                password_adm();
+                user_register();
                 break;
             case 3 :
+                password_adm();
+                break;
+            case 4 :
                 help();
                 break;
             default:
-                printf("\n¿Í¹Ù£¬Ã»ÓĞÕâ¸öÑ¡Ïîàç!");
+                printf("\n¿Í¹Ù£¬Ã»ÓĞÕâ¸öÑ¡Ïîàç!\nÁ½Ãëºó·µ»Ø");
+                sleep(2);
+
         }
     } while (z != 0);
     file_close();  // to free all the pointer and input data to file
 }
-
