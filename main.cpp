@@ -391,7 +391,7 @@ void file_close()  //¹Ø±ÕÎÄ¼ş,½«»º´æ±£´æÔÚÎÄ¼ş
 
     p2 = head_yhthings;
     while (p2 != NULL) {
-        fwrite(&(*p2), sizeof(struct yhthings), 1, yhthings_file);
+        fwrite(p2, sizeof(struct yhthings), 1, yhthings_file);
         p21 = p2;
         p2 = p2->next;
         free(p21);
@@ -640,6 +640,7 @@ void input_yonghu()  //ÓÃ»§Â¼Èë
         while (1) {
             printf("\nÇëÊäÈëÓÃ»§ÃÜÂë:");
             password_input(password);
+            system("cls");
             password_input(password2);
             if ((strcmp(password, password2)) == 0) {
                 password_encryption(password);
@@ -1535,7 +1536,8 @@ void skim_yhthings1()//²é¿´ËùÓĞÓÃ»§ÎïÆ·ĞÅÏ¢
     printf("\n-------------------------------------------------------------------");
     while (p1 != NULL) {
         printf("\n\t\tÎïÆ·ID£º  %d", p1->id);
-        printf("\n\t\tËùÓĞÈËID£º  %s", p1->yonghu_name);
+        printf("\n\t\tËùÓĞÈËID£º  %d", p1->id1);
+        printf("\n\t\tËùÓĞÈËÃû×Ö£º  %s", p1->yonghu_name);
         printf("\n\t\tÎïÆ·Ãû³Æ£º%s", p1->name);
         printf("\n\t\tÎïÆ·³¯´ú£º%s", p1->time);
         printf("\n\t\tÎïÆ·¼Û¸ñ£º%lf\n", p1->n_price);
@@ -2080,6 +2082,7 @@ void buy(struct yonghu *p)//¾º¹º×Ô¼ºÏëÒªµÄÎïÆ·
                         sprintf(log_message, "buying\nsuccessfully,thing_id:%d , pre_price:%lf, now_price:%lf", p9->id,
                                 p3->n_price, p9->price);
                         logging(p9->id, log_message);
+
                         p8->next = p9;
                         p6 = p9;
                         p6->next = NULL;
@@ -2695,6 +2698,8 @@ void zuigaojia(struct paimaipin *p, struct yonghu *ppp)//»ñµÃ¾º¹ºµÄÉÌÆ·½á¹û£¬²¢Í
             printf("\n¸ÃÎïÆ·ÒÑ±»Äú¾ºµÃ£¬¾ºµÃµÄ¼ÛÇ®ÊÇ£º%lf\n", max);
         }
     }
+    printf("5Ãëºó×Ô¶¯ÍË³ö±¾½çÃæ");
+    sleep(5);
     system("cls");
     return;
 }
