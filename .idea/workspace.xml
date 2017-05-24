@@ -11,11 +11,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0fe046ee-adb4-485d-9da7-1df2c9e255eb" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/auction.exe" afterPath="$PROJECT_DIR$/cmake-build-debug/auction.exe" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.cpp" afterPath="$PROJECT_DIR$/main.cpp" />
-    </list>
+    <list default="true" id="0fe046ee-adb4-485d-9da7-1df2c9e255eb" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,8 +26,8 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="19" column="18" lean-forward="true" selection-start-line="19" selection-start-column="18" selection-end-line="19" selection-end-column="18" />
+            <state relative-caret-position="-2964">
+              <caret line="43" column="11" lean-forward="true" selection-start-line="43" selection-start-column="11" selection-end-line="43" selection-end-column="11" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -398,7 +394,7 @@
       <workItem from="1495442048009" duration="2834000" />
       <workItem from="1495506332843" duration="296000" />
       <workItem from="1495539855246" duration="15000" />
-      <workItem from="1495630417602" duration="624000" />
+      <workItem from="1495630417602" duration="1121000" />
     </task>
     <task id="LOCAL-00001" summary="add encryption function&#10;before add encryption to each function">
       <created>1493692748680</created>
@@ -460,7 +456,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="90210000" />
+    <option name="totallyTimeSpent" value="90707000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -945,8 +941,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="19" column="18" lean-forward="true" selection-start-line="19" selection-start-column="18" selection-end-line="19" selection-end-column="18" />
+        <state relative-caret-position="-2964">
+          <caret line="43" column="11" lean-forward="true" selection-start-line="43" selection-start-column="11" selection-end-line="43" selection-end-column="11" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
