@@ -247,3 +247,78 @@ successfully, now_price:10000000.000000
 Mon May 22 17:16:57 2017
 ID:2       user_login
 login successfully
+Fri May 26 11:42:56 2017
+ID:1       admin_input
+name:黎明, phone:13000011111, email:liming@auction.com, score:0
+Fri May 26 11:43:00 2017
+ID:1       admin_login
+login successfully
+Fri May 26 11:44:21 2017
+ID:1       thing_input
+name:iphone9, time:现代, type:1,
+Fri May 26 11:44:55 2017
+ID:1       thing_input
+name:by, time:Apple, type:1,
+Fri May 26 11:46:18 2017
+ID:2       thing_input
+name:SANSUM_S9_EDGE, time:2018, type:1,
+Fri May 26 11:48:29 2017
+ID:3       thing_input
+name:LOL最强王者账号, time:现在, type:0,
+Fri May 26 11:48:41 2017
+ID:1       admin_login
+login successfully
+Fri May 26 11:51:06 2017
+ID:4       thing_input
+name:青花瓷, time:宋, type:1,
+Fri May 26 11:51:46 2017
+ID:5       thing_input
+name:黄地珐琅彩荷花杯, time:民国, type:1,
+Fri May 26 11:53:16 2017
+ID:6       thing_input
+name:SANSUM_NOTE_7, time:公元2016年, type:1,
+Fri May 26 11:54:41 2017
+ID:7       thing_input
+name:6位QQ账号, time:xian'zai现代, type:2,
+Fri May 26 11:55:48 2017
+ID:1       admin_login
+login successfully
+Fri May 26 11:56:40 2017
+ID:7       thing_type_changing
+ new_price:1
+Fri May 26 11:57:01 2017
+ID:1       admin_login
+login successfully
+Fri May 26 11:58:01 2017
+ID:8       thing_input
+name:意大利名画, time:上世纪, type:1,
+Fri May 26 11:58:53 2017
+ID:9       thing_input
+name:bilibili会员, time:现代, type:0,
+Fri May 26 11:59:59 2017
+ID:10      thing_input
+name:毒奶粉账号, time:现代, type:0,
+Fri May 26 12:00:14 2017
+ID:1       admin_login
+login successfully
+Fri May 26 12:00:44 2017
+ID:1       user_input
+name:ID1, phone:12345678901, email:1@autcion.com, score:0
+Fri May 26 12:01:17 2017
+ID:2       user_input
+name:周杰伦, phone:11111111111, email:zhou@auction.com, score:0
+Fri May 26 12:01:50 2017
+ID:3       user_input
+name:古天乐, phone:13252323241, email:gu@auction.com, score:0
+Fri May 26 12:01:57 2017
+ID:1       admin_login
+login successfully
+Fri May 26 12:02:14 2017
+ID:1       user_ownership
+name:iphone9, price_before:1000.000000, price_now:1000.000000
+Fri May 26 12:02:25 2017
+ID:2       user_ownership
+name:SANSUM_S9_EDGE, price_before:4200.000000, price_now:4200.000000
+Fri May 26 12:02:35 2017
+ID:3       user_ownership
+name:LOL最强王者账号, price_before:5000.000000, price_now:5000.000000
