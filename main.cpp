@@ -514,7 +514,7 @@ void insert_yhthings2(struct yhthings yhthings1)  //将用户物品信息插入用户物品链
         p5->id = yhthings1.id;
         p5->id1 = yhthings1.id1;
         strcpy(p5->name, yhthings1.name);
-        strcpy(p5->yonghu_name, p->name);
+        strcpy(p5->yonghu_name, p->yonghu_name);
         strcpy(p5->time, yhthings1.time);
         p5->f_price = yhthings1.f_price;
         p5->n_price = yhthings1.n_price;
@@ -537,7 +537,7 @@ void insert_yhthings2(struct yhthings yhthings1)  //将用户物品信息插入用户物品链
                 p5->id = yhthings1.id;
                 p5->id1 = yhthings1.id1;
                 strcpy(p5->name, yhthings1.name);
-                strcpy(p5->yonghu_name, p->name);
+                strcpy(p5->yonghu_name, p->yonghu_name);
                 strcpy(p5->time, yhthings1.time);
                 p5->f_price = yhthings1.f_price;
                 p5->n_price = yhthings1.n_price;
@@ -559,7 +559,7 @@ void insert_yhthings2(struct yhthings yhthings1)  //将用户物品信息插入用户物品链
                     p5->id = yhthings1.id;
                     p5->id1 = yhthings1.id1;
                     strcpy(p5->name, yhthings1.name);
-                    strcpy(p5->yonghu_name, p->name);
+                    strcpy(p5->yonghu_name, p->yonghu_name);
                     strcpy(p5->time, yhthings1.time);
                     p5->f_price = yhthings1.f_price;
                     p5->n_price = yhthings1.n_price;
@@ -572,7 +572,7 @@ void insert_yhthings2(struct yhthings yhthings1)  //将用户物品信息插入用户物品链
                     p5->id = yhthings1.id;
                     p5->id1 = yhthings1.id1;
                     strcpy(p5->name, yhthings1.name);
-                    strcpy(p5->yonghu_name, p->name);
+                    strcpy(p5->yonghu_name, p->yonghu_name);
                     strcpy(p5->time, yhthings1.time);
                     p5->f_price = yhthings1.f_price;
                     p5->n_price = yhthings1.n_price;
@@ -1919,8 +1919,7 @@ void adm_ui_2()//管理员界面2
     int z;
     system("cls");
     do {
-
-
+        system("cls");
         printf("\n\t\t\t-----------------------------------\n");
         printf("\t\t\t+            管理员                |\n");
         printf("\t\t\t--------------------------------\n");

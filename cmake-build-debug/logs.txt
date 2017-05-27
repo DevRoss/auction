@@ -322,3 +322,15 @@ name:SANSUM_S9_EDGE, price_before:4200.000000, price_now:4200.000000
 Fri May 26 12:02:35 2017
 ID:3       user_ownership
 name:LOL最强王者账号, price_before:5000.000000, price_now:5000.000000
+Fri May 26 12:47:27 2017
+ID:1       admin_login
+login successfully
+Sat May 27 20:19:21 2017
+ID:1       admin_login
+login successfully
+Sat May 27 21:12:32 2017
+ID:1       admin_login
+login successfully
+Sat May 27 21:12:47 2017
+ID:9       user_ownership
+name:bilibili会员, price_before:2333.000000, price_now:4432.000000
