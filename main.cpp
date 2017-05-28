@@ -143,7 +143,9 @@ void input_yonghu();//用户录入
 void input_yhthings();//用户物品信息录入
 void insert_adm(struct adm adm1); //管理员结构体插入
 void insert_yhthings1(struct yhthings yhthings1); //将物品信息插入用户
-void insert_yhthings2(struct yhthings yhthings1); //将物品信息插入管理员
+void insert_yhthings2(struct yhthings yhthings1); //将物品信息插入用户物品链
+void insert_yhthings3(struct yhthings yhthings1, struct yonghu *pre); //将物品信息插入用户物品链
+void insert_yhthings4(struct yhthings yhthings1, struct yonghu *pre); //将物品信息插入用户
 void insert_paimaipin1(struct paimaipin wupin1); //将拍卖物品结构体插入
 void jingpai(struct yonghu *p);//竞拍功能
 void jinggou(struct yonghu *p);//竞购物品功能界面
@@ -174,11 +176,193 @@ void password_encryption(char *password); //密码加密
 void logging(int id, char *action); //日志记录
 void show_log();  //管理员显示日志
 void user_register(); //用户注册
+struct yonghu *get_yonghu(int id); //通过ID号返回用户指针
 
 //-------------------------------------------function list-------------------------------------------//
 
+struct yonghu *get_yonghu(int id) {
+    struct yonghu *p = head_yonghu;
+    while (p != NULL) {
+        if (p->id) return p;
+    }
+    return p;
+}
 
+void insert_yhthings2(struct yhthings yhthings1)  //将用户物品信息插入用户物品链表中
+{
+    struct yhthings *p5, *p3, *p4;
+    struct yhthings *p;
+    if (head_yhthings == NULL)  // empty linked list
+    {
+        p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
+        p5->id = yhthings1.id;
+        p5->id1 = yhthings1.id1;
+        strcpy(p5->name, yhthings1.name);
+        strcpy(p5->yonghu_name, yhthings1.yonghu_name);
+        strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
+        strcpy(p5->time, yhthings1.time);
+        p5->f_price = yhthings1.f_price;
+        p5->n_price = yhthings1.n_price;
+        head_yhthings = p5;
+        p5->next = NULL;
+        yhthings_info.num++;
+    } else {
+        p3 = head_yhthings;
+        p4 = head_yhthings;
+        while (p3 != NULL) {
+            if (p3->id >= yhthings1.id) break;
+            p4 = p3;
+            p3 = p3->next;
+        }
+        if (p3 == NULL || p3->id > yhthings1.id) {
+            p3 = (struct yhthings *) head_yhthings;
+            if (p3->id > yhthings1.id)  //insert at the head_yhthings
+            {
+                p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
+                p5->id = yhthings1.id;
+                p5->id1 = yhthings1.id1;
+                strcpy(p5->name, yhthings1.name);
+                strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
+                strcpy(p5->yonghu_name, p->yonghu_name);
+                strcpy(p5->time, yhthings1.time);
+                p5->f_price = yhthings1.f_price;
+                p5->n_price = yhthings1.n_price;
+                p5->next = head_yhthings;
+                yhthings_info.num++;
+                head_yhthings = p5;
+            } else //insert at the middle or at the end
+            {
 
+                while (p3->id < yhthings1.id && p3->next != NULL) // to find the point to insert
+                {
+                    if (p3->id == yhthings1.id) break;
+                    p4 = p3;
+                    p3 = p3->next;
+                }
+                if (p3->next == NULL && p3->id < yhthings1.id) // insert at the end
+                {
+                    p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
+                    p5->id = yhthings1.id;
+                    p5->id1 = yhthings1.id1;
+                    strcpy(p5->name, yhthings1.name);
+                    strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
+                    strcpy(p5->yonghu_name, p->yonghu_name);
+                    strcpy(p5->time, yhthings1.time);
+                    p5->f_price = yhthings1.f_price;
+                    p5->n_price = yhthings1.n_price;
+                    p5->next = NULL;
+                    yhthings_info.num++;
+                    p3->next = p5;
+                } else //insert at the middle
+                {
+                    p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
+                    p5->id = yhthings1.id;
+                    p5->id1 = yhthings1.id1;
+                    strcpy(p5->name, yhthings1.name);
+                    strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
+                    strcpy(p5->yonghu_name, p->yonghu_name);
+                    strcpy(p5->time, yhthings1.time);
+                    p5->f_price = yhthings1.f_price;
+                    p5->n_price = yhthings1.n_price;
+                    p5->next = p3;
+                    yhthings_info.num++;
+                    p4->next = p5;
+                }
+
+            }
+        } else printf("\n该用户物品已存在。");
+
+    }
+
+}
+
+void insert_yhthings3(struct yhthings yhthings1, struct yonghu *pre)  //将用户物品信息插入用户物品链表中
+{
+    struct yhthings *p5, *p3, *p4;
+    struct yhthings *p;
+    if (head_yhthings == NULL)  // empty linked list
+    {
+        p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
+        p5->id = yhthings1.id;
+        p5->id1 = yhthings1.id1;
+        strcpy(p5->name, yhthings1.name);
+        strcpy(p5->yonghu_name, yhthings1.yonghu_name);
+        strcpy(p5->p_yonghu_name, pre->name);
+        strcpy(p5->time, yhthings1.time);
+        p5->f_price = yhthings1.f_price;
+        p5->n_price = yhthings1.n_price;
+        head_yhthings = p5;
+        p5->next = NULL;
+        yhthings_info.num++;
+    } else {
+        p3 = head_yhthings;
+        p4 = head_yhthings;
+        while (p3 != NULL) {
+            if (p3->id >= yhthings1.id) break;
+            p4 = p3;
+            p3 = p3->next;
+        }
+        if (p3 == NULL || p3->id > yhthings1.id) {
+            p3 = (struct yhthings *) head_yhthings;
+            if (p3->id > yhthings1.id)  //insert at the head_yhthings
+            {
+                p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
+                p5->id = yhthings1.id;
+                p5->id1 = yhthings1.id1;
+                strcpy(p5->name, yhthings1.name);
+                strcpy(p5->p_yonghu_name, pre->name);
+                strcpy(p5->yonghu_name, p->yonghu_name);
+                strcpy(p5->time, yhthings1.time);
+                p5->f_price = yhthings1.f_price;
+                p5->n_price = yhthings1.n_price;
+                p5->next = head_yhthings;
+                yhthings_info.num++;
+                head_yhthings = p5;
+            } else //insert at the middle or at the end
+            {
+
+                while (p3->id < yhthings1.id && p3->next != NULL) // to find the point to insert
+                {
+                    if (p3->id == yhthings1.id) break;
+                    p4 = p3;
+                    p3 = p3->next;
+                }
+                if (p3->next == NULL && p3->id < yhthings1.id) // insert at the end
+                {
+                    p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
+                    p5->id = yhthings1.id;
+                    p5->id1 = yhthings1.id1;
+                    strcpy(p5->name, yhthings1.name);
+                    strcpy(p5->p_yonghu_name, pre->name);
+                    strcpy(p5->yonghu_name, p->yonghu_name);
+                    strcpy(p5->time, yhthings1.time);
+                    p5->f_price = yhthings1.f_price;
+                    p5->n_price = yhthings1.n_price;
+                    p5->next = NULL;
+                    yhthings_info.num++;
+                    p3->next = p5;
+                } else //insert at the middle
+                {
+                    p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
+                    p5->id = yhthings1.id;
+                    p5->id1 = yhthings1.id1;
+                    strcpy(p5->name, yhthings1.name);
+                    strcpy(p5->p_yonghu_name, pre->name);
+                    strcpy(p5->yonghu_name, p->yonghu_name);
+                    strcpy(p5->time, yhthings1.time);
+                    p5->f_price = yhthings1.f_price;
+                    p5->n_price = yhthings1.n_price;
+                    p5->next = p3;
+                    yhthings_info.num++;
+                    p4->next = p5;
+                }
+
+            }
+        } else printf("\n该用户物品已存在。");
+
+    }
+
+}
 
 void password_encryption(char *password) {
     for (int i = 0; i < strlen(password); ++i) {
@@ -505,95 +689,6 @@ void insert_thing(struct things thing1) //物品结构体插入
 }
 
 
-void insert_yhthings2(struct yhthings yhthings1)  //将用户物品信息插入用户物品链表中
-{
-    struct yhthings *p5, *p3, *p4;
-    struct yhthings *p;
-    if (head_yhthings == NULL)  // empty linked list
-    {
-        p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
-        p5->id = yhthings1.id;
-        p5->id1 = yhthings1.id1;
-        strcpy(p5->name, yhthings1.name);
-        strcpy(p5->yonghu_name, yhthings1.yonghu_name);
-        strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
-        strcpy(p5->time, yhthings1.time);
-        p5->f_price = yhthings1.f_price;
-        p5->n_price = yhthings1.n_price;
-        head_yhthings = p5;
-        p5->next = NULL;
-        yhthings_info.num++;
-    } else {
-        p3 = head_yhthings;
-        p4 = head_yhthings;
-        while (p3 != NULL) {
-            if (p3->id >= yhthings1.id) break;
-            p4 = p3;
-            p3 = p3->next;
-        }
-        if (p3 == NULL || p3->id > yhthings1.id) {
-            p3 = (struct yhthings *) head_yhthings;
-            if (p3->id > yhthings1.id)  //insert at the head_yhthings
-            {
-                p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
-                p5->id = yhthings1.id;
-                p5->id1 = yhthings1.id1;
-                strcpy(p5->name, yhthings1.name);
-                strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
-                strcpy(p5->yonghu_name, p->yonghu_name);
-                strcpy(p5->time, yhthings1.time);
-                p5->f_price = yhthings1.f_price;
-                p5->n_price = yhthings1.n_price;
-                p5->next = head_yhthings;
-                yhthings_info.num++;
-                head_yhthings = p5;
-            } else //insert at the middle or at the end
-            {
-
-                while (p3->id < yhthings1.id && p3->next != NULL) // to find the point to insert
-                {
-                    if (p3->id == yhthings1.id) break;
-                    p4 = p3;
-                    p3 = p3->next;
-                }
-                if (p3->next == NULL && p3->id < yhthings1.id) // insert at the end
-                {
-                    p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
-                    p5->id = yhthings1.id;
-                    p5->id1 = yhthings1.id1;
-                    strcpy(p5->name, yhthings1.name);
-                    strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
-                    strcpy(p5->yonghu_name, p->yonghu_name);
-                    strcpy(p5->time, yhthings1.time);
-                    p5->f_price = yhthings1.f_price;
-                    p5->n_price = yhthings1.n_price;
-                    p5->next = NULL;
-                    yhthings_info.num++;
-                    p3->next = p5;
-                } else //insert at the middle
-                {
-                    p5 = (struct yhthings *) malloc(sizeof(struct yhthings));
-                    p5->id = yhthings1.id;
-                    p5->id1 = yhthings1.id1;
-                    strcpy(p5->name, yhthings1.name);
-                    strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
-                    strcpy(p5->yonghu_name, p->yonghu_name);
-                    strcpy(p5->time, yhthings1.time);
-                    p5->f_price = yhthings1.f_price;
-                    p5->n_price = yhthings1.n_price;
-                    p5->next = p3;
-                    yhthings_info.num++;
-                    p4->next = p5;
-                }
-
-            }
-        } else printf("\n该用户物品已存在。");
-
-    }
-
-}
-
-
 void input_thing()  //物品信息录入
 {
     system("cls");
@@ -720,6 +815,8 @@ void input_yhthings()  //用户物品信息录入
     struct yhthings yhthings1;
     struct things *thing_p;
     int flag;
+    int pre_id = 0;
+    struct yonghu *pre = NULL;
     printf("\n请输入用户物品信息数据,输入0结束输入.");
     printf("\n请输入目标物品ID(8位数字):");
     scanf("%d", &yhthings1.id);
@@ -742,20 +839,24 @@ void input_yhthings()  //用户物品信息录入
             printf("\n请输入目标用户ID：");
             scanf("%d", &yhthings1.id1);
             printf("\n请输入卖主用户ID：");
-            scanf("%s", yhthings1.p_yonghu_name);
+            scanf("%d", &pre_id);
+            pre = get_yonghu(pre_id);
+            if (pre == NULL) {
+                printf("用户不存在，请输入正确的用户ID");
+                continue;
+            }
             printf("\n请输入用户物品原价格:");
             scanf("%lf", &yhthings1.f_price);
             printf("\n请输入用户物品竞拍后价格:");
             scanf("%lf", &yhthings1.n_price);
             yhthings1.next = NULL;
             yhthings1.follow = NULL;
-            insert_yhthings1(yhthings1);
-            insert_yhthings2(yhthings1);
+            insert_yhthings4(yhthings1, pre);
+            insert_yhthings3(yhthings1, pre);
             sprintf(log_message, "user_ownership\nname:%s, price_before:%lf, price_now:%lf", thing_p->name,
                     yhthings1.f_price, yhthings1.n_price);
             logging(yhthings1.id, log_message);
         }
-
         printf("\n请输入用户物品ID(8位数字):");
         scanf("%d", &yhthings1.id);
     }
@@ -1416,6 +1517,7 @@ void yonghu_ui(struct yonghu *p)//用户界面
                 break;
             case 5:
                 skim_yhthings(p);
+                break;
             default:
                 printf("\n无效选项!");
         }
@@ -1488,6 +1590,7 @@ void show_thing_with_kind()//查看所有物品信息
     system("cls");
     p1 = head;
     int type;
+    fflush(stdin);
     printf("请输入物品类型，0为虚拟物品，1为实体物品");
     scanf("%d", &type);
     printf("\n-------------------------------------------------------------------");
@@ -1751,7 +1854,6 @@ void skim_thing_kind() // 根据类别查看物品 管理员功能
 void del_things()//删除用户信息
 {
     struct things *p1, *p11;
-    struct yonghu *p2, *p3;
     struct yhthings *p21, *p22;
     int id;
     int flag = 0;
@@ -1759,71 +1861,110 @@ void del_things()//删除用户信息
     printf("\n请输入要删除物品的ID(8位,输入0为停止删除):");
     scanf("%d", &id);
     fflush(stdin);
+//    while (id != 0) {
+//        flag = 0;
+//        p1 = p11 = head;
+//        while (p1 != NULL) {
+//            if (p1->id == id) break;
+//            p11=p1;
+//            p1 = p1->next;
+//        }
+//        if (p1 != NULL) {
+//            p2 = p1->yonghu;
+//            while (p2 != NULL) {
+//                p3 = head_yonghu;
+//                while (p3 != NULL) {
+//                    if (p3->id == p2->id) break;
+//                    p3 = p3->next;
+//                }
+//                if (p3 != NULL) {
+//                    p22 = p3->yhthings;
+//                    p21 = p3->yhthings;
+//                    while (p21 != NULL) {
+//                        if (strcmp(p21->name, p1->name) == 0) {
+//                            if (p22 == p21) {
+//                                p21 = p21->next;
+//                                p3->yhthings = p21;
+//                                free(p22);
+//                                flag = 1;
+//                                break;
+//                            } else {
+//                                p22->next = p21->next;
+//                                free(p21);
+//                                flag = 1;
+//                                break;
+//                            }
+//                        } else {
+//                            if (p21 == p22)
+//                                p21 = p22->next;
+//                            else {
+//                                p22 = p22->next;
+//                                p21 = p22->next;
+//                            }
+//                        }
+//                    }
+//                }
+//                printf("\n成功删除该物品信息.");
+//            }
     while (id != 0) {
-        flag = 0;
         p1 = p11 = head;
         while (p1 != NULL) {
-            if (p1->id == id) break;
+            if (p1->id ==id) break;
+            p11 = p1;
             p1 = p1->next;
         }
         if (p1 != NULL) {
-            p2 = p1->yonghu;
-            while (p2 != NULL) {
-                p3 = head_yonghu;
-                while (p3 != NULL) {
-                    if (p3->id == p2->id) break;
-                    p3 = p3->next;
-                }
-                if (p3 != NULL) {
-                    p22 = p3->yhthings;
-                    p21 = p3->yhthings;
-                    while (p21 != NULL) {
-                        if (strcmp(p21->name, p1->name) == 0) {
-                            if (p22 == p21) {
-                                p21 = p21->next;
-                                p3->yhthings = p21;
-                                free(p22);
-                                flag = 1;
-                                break;
-                            } else {
-                                p22->next = p21->next;
-                                free(p21);
-                                flag = 1;
-                                break;
-                            }
-                        } else {
-                            if (p21 == p22)
-                                p21 = p22->next;
-                            else {
-                                p22 = p22->next;
-                                p21 = p22->next;
-                            }
-                        }
-                    }
-                }
-                printf("\n成功删除该物品信息.");
+            if (p1 == p11) { // 链表头
+                head = p1->next;
+                sprintf(log_message, "thing_delete\nsuccessfully");
+                logging(p1->id, log_message);
+                free(p1);
+            } else {
+                p11->next = p1->next;
+                sprintf(log_message, "thing_delete\nsuccessfully");
+                logging(p1->id, log_message);
+                free(p1);
             }
-            while (p1 != NULL) //释放things内存
-            {
-                if (p1->id == id) {
-                    if (p1 == p11) head = p1->next;
-                    else p11->next = p1->next;
-                    sprintf(log_message, "thing_delete\nsuccessfully");
-                    logging(p1->id, log_message);
-                    free(p1);
-                    thing_info.num--;
-                    break;
-                }
-                p11 = p1;
-                p1 = p1->next;
+            p21 = p22 = head_yhthings;
+            while (p21 != NULL) {
+                if(p21->id==id) break;
+                p22 = p21;
+                p21 = p21->next;
             }
-
-        } else {
-            printf("\n抱歉没有该物品~");
-        }
-        printf("\n请输入要删除物品的ID(8位学号,输入0为停止删除):");
+            if(p21==p22){  //链表头
+                head_yhthings = p21->next;
+            } else {
+                p22->next = p21->next;
+            }
+            free(p21);
+            yhthings_info.num--;
+            thing_info.num--;
+            printf("ID为%的物品删除成功", id);
+            break;
+        } else printf("\n抱歉没有该物品~");
+        printf("\n请输入要删除物品的ID(8位,输入0为停止删除):");
         scanf("%d", &id);
     }
+//            while (p1 != NULL) //释放things内存
+//            {
+//                if (p1->id == id) {
+//                    if (p1 == p11) head = p1->next;
+//                    else p11->next = p1->next;
+//
+//                    free(p1);
+//                    thing_info.num--;
+//                    break;
+//                }
+//                p11 = p1;
+//                p1 = p1->next;
+//            }
+//
+//        } else {
+//            printf("\n抱歉没有该物品~");
+//        }
+//        printf("\n请输入要删除物品的ID(8位,输入0为停止删除):");
+//        scanf("%d", &id);
+//    }
 }
 
 
@@ -2329,6 +2470,48 @@ void insert_yhthings1(struct yhthings yhthings1)  //将物品信息插入用户
     return;
 }
 
+void insert_yhthings4(struct yhthings yhthings1, struct yonghu *pre)  //将物品信息插入用户
+{
+    struct yhthings *p1, *p2, *p3;
+    struct yonghu *p8;
+    p8 = head_yonghu;
+    while (p8->id != yhthings1.id1 && p8->next != NULL)  //寻找物品所属用户
+    {
+        p8 = p8->next;
+    }
+    if (p8->next == NULL && p8->id != yhthings1.id1) {
+        printf("\n没有这个用户呢!信息插入不进去噻！");
+    } else {
+        p1 = (struct yhthings *) p8->yhthings;
+        p3 = (struct yhthings *) p8->yhthings;
+        while (p1 != NULL) //p3为前一个指针 p1为当前地址
+        {
+            if (p1->id == yhthings1.id) break;
+            p3 = p1;
+            p1 = p1->next;
+
+        }
+        if (p1 != NULL && p1->id == yhthings1.id) {
+            p1->f_price = yhthings1.f_price;
+            p1->n_price = yhthings1.n_price;
+        } else {
+            p2 = (struct yhthings *) malloc(sizeof(struct yhthings));
+            p2->id = yhthings1.id;
+            p2->id1 = yhthings1.id1;
+            strcpy(p2->name, yhthings1.name);
+            strcpy(p2->p_yonghu_name, pre->name);
+            strcpy(p2->yonghu_name, p8->name);
+            strcpy(p2->time, yhthings1.time);
+            p2->f_price = yhthings1.f_price;
+            p2->n_price = yhthings1.n_price;
+            p2->next = NULL;
+            if (p3 == NULL) p8->yhthings = p2;
+            else p3->next = p2;
+        }
+    }
+    return;
+}
+
 
 void insert_paimaipin1(struct paimaipin wupin1) {
     struct paimaipin *p3, *p4, *p5;
@@ -2413,6 +2596,8 @@ void jingpai(struct yonghu *p)//竞拍功能
         printf("\n\t\t     *|                          |* ");
         printf("\n\t\t     *|\t      (3)拍卖结果        |*");
         printf("\n\t\t     *|                          |* ");
+        printf("\n\t\t     *|\t      (4)我的物品        |*");
+        printf("\n\t\t     *|                          |* ");
         printf("\n\t\t     *|\t      (0)返回上一层      |*");
         printf("\n\t\t     ****************************** \n");
         printf("\n\t\t     请输入你的选择：");
@@ -2427,6 +2612,10 @@ void jingpai(struct yonghu *p)//竞拍功能
                 break;
             case 3:
                 pairesult(p);
+                break;
+            case 4:
+                skim_yhthings(p);
+                break;
             case 0:
                 break;
             default:
