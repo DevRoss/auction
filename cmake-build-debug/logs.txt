@@ -334,3 +334,48 @@ login successfully
 Sat May 27 21:12:47 2017
 ID:9       user_ownership
 name:bilibili会员, price_before:2333.000000, price_now:4432.000000
+Sat May 27 23:12:45 2017
+ID:1       admin_login
+login successfully
+Sat May 27 23:12:53 2017
+ID:3       user_ownership
+name:LOL最强王者账号, price_before:0.000000, price_now:0.000000
+Sat May 27 23:28:44 2017
+ID:1       admin_login
+login successfully
+Sat May 27 23:28:54 2017
+ID:1       user_ownership
+name:iphone9, price_before:2333.000000, price_now:333.000000
+Sun May 28 01:32:02 2017
+ID:1       admin_login
+login successfully
+Sun May 28 01:32:13 2017
+ID:3       user_ownership
+name:LOL最强王者账号, price_before:123.000000, price_now:1234.000000
+Sun May 28 01:48:03 2017
+ID:1       admin_login
+login successfully
+Sun May 28 01:48:26 2017
+ID:4       user_ownership
+name:青花瓷, price_before:2333.000000, price_now:324.000000
+Sun May 28 02:01:29 2017
+ID:1       admin_login
+login successfully
+Sun May 28 02:01:39 2017
+ID:5       user_ownership
+name:黄地珐琅彩荷花杯, price_before:2333.000000, price_now:23441.000000
+Sun May 28 02:04:19 2017
+ID:1       admin_login
+login successfully
+Sun May 28 02:04:32 2017
+ID:4       user_ownership
+name:青花瓷, price_before:234.000000, price_now:2345.000000
+Sun May 28 02:05:07 2017
+ID:6       user_ownership
+name:SANSUM_NOTE_7, price_before:1234.000000, price_now:245.000000
+Sun May 28 02:06:18 2017
+ID:1       admin_login
+login successfully
+Sun May 28 02:06:35 2017
+ID:6       user_ownership
+name:SANSUM_NOTE_7, price_before:23.000000, price_now:2342.000000

@@ -57,6 +57,7 @@ struct yhthings //用户物品结构体 物品编号、物品名称、物品原价格、物品竞拍后价格
     int id1;
     char name[50];
     char time[20];
+    char p_yonghu_name[50];
     char yonghu_name[50];
     double f_price;
     double n_price;
@@ -514,7 +515,8 @@ void insert_yhthings2(struct yhthings yhthings1)  //将用户物品信息插入用户物品链
         p5->id = yhthings1.id;
         p5->id1 = yhthings1.id1;
         strcpy(p5->name, yhthings1.name);
-        strcpy(p5->yonghu_name, p->yonghu_name);
+        strcpy(p5->yonghu_name, yhthings1.yonghu_name);
+        strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
         strcpy(p5->time, yhthings1.time);
         p5->f_price = yhthings1.f_price;
         p5->n_price = yhthings1.n_price;
@@ -537,6 +539,7 @@ void insert_yhthings2(struct yhthings yhthings1)  //将用户物品信息插入用户物品链
                 p5->id = yhthings1.id;
                 p5->id1 = yhthings1.id1;
                 strcpy(p5->name, yhthings1.name);
+                strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
                 strcpy(p5->yonghu_name, p->yonghu_name);
                 strcpy(p5->time, yhthings1.time);
                 p5->f_price = yhthings1.f_price;
@@ -559,6 +562,7 @@ void insert_yhthings2(struct yhthings yhthings1)  //将用户物品信息插入用户物品链
                     p5->id = yhthings1.id;
                     p5->id1 = yhthings1.id1;
                     strcpy(p5->name, yhthings1.name);
+                    strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
                     strcpy(p5->yonghu_name, p->yonghu_name);
                     strcpy(p5->time, yhthings1.time);
                     p5->f_price = yhthings1.f_price;
@@ -572,6 +576,7 @@ void insert_yhthings2(struct yhthings yhthings1)  //将用户物品信息插入用户物品链
                     p5->id = yhthings1.id;
                     p5->id1 = yhthings1.id1;
                     strcpy(p5->name, yhthings1.name);
+                    strcpy(p5->p_yonghu_name, yhthings1.p_yonghu_name);
                     strcpy(p5->yonghu_name, p->yonghu_name);
                     strcpy(p5->time, yhthings1.time);
                     p5->f_price = yhthings1.f_price;
@@ -715,7 +720,6 @@ void input_yhthings()  //用户物品信息录入
     struct yhthings yhthings1;
     struct things *thing_p;
     int flag;
-    //struct yhthings *cp;
     printf("\n请输入用户物品信息数据,输入0结束输入.");
     printf("\n请输入目标物品ID(8位数字):");
     scanf("%d", &yhthings1.id);
@@ -737,6 +741,8 @@ void input_yhthings()  //用户物品信息录入
         else {
             printf("\n请输入目标用户ID：");
             scanf("%d", &yhthings1.id1);
+            printf("\n请输入卖主用户ID：");
+            scanf("%s", yhthings1.p_yonghu_name);
             printf("\n请输入用户物品原价格:");
             scanf("%lf", &yhthings1.f_price);
             printf("\n请输入用户物品竞拍后价格:");
@@ -1537,10 +1543,12 @@ void skim_yhthings1()//查看所有用户物品信息
     while (p1 != NULL) {
         printf("\n\t\t物品ID：  %d", p1->id);
         printf("\n\t\t所有人ID：  %d", p1->id1);
-        printf("\n\t\t所有人名字：  %s", p1->yonghu_name);
+        printf("\n\t\t卖主名字：  %s", p1->p_yonghu_name);
+        printf("\n\t\t得主名字：  %s", p1->yonghu_name);
         printf("\n\t\t物品名称：%s", p1->name);
         printf("\n\t\t物品朝代：%s", p1->time);
-        printf("\n\t\t物品价格：%lf\n", p1->n_price);
+        printf("\n\t\t物品拍卖前价格：%lf", p1->f_price);
+        printf("\n\t\t物品拍卖后后价格：%lf\n", p1->n_price);
         p1 = p1->next;
     }
     getchar();
@@ -2308,6 +2316,7 @@ void insert_yhthings1(struct yhthings yhthings1)  //将物品信息插入用户
             p2->id = yhthings1.id;
             p2->id1 = yhthings1.id1;
             strcpy(p2->name, yhthings1.name);
+            strcpy(p2->p_yonghu_name, yhthings1.p_yonghu_name);
             strcpy(p2->yonghu_name, p8->name);
             strcpy(p2->time, yhthings1.time);
             p2->f_price = yhthings1.f_price;
