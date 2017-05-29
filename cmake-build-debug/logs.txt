@@ -379,3 +379,54 @@ login successfully
 Sun May 28 02:06:35 2017
 ID:6       user_ownership
 name:SANSUM_NOTE_7, price_before:23.000000, price_now:2342.000000
+Sun May 28 10:57:11 2017
+ID:1       admin_login
+login successfully
+Sun May 28 10:57:26 2017
+ID:9       user_ownership
+name:bilibili会员, price_before:342.000000, price_now:2345.000000
+Sun May 28 11:16:01 2017
+ID:1       admin_login
+login successfully
+Sun May 28 11:16:13 2017
+ID:6       user_ownership
+name:SANSUM_NOTE_7, price_before:2131.000000, price_now:1222.000000
+Sun May 28 11:17:17 2017
+ID:1       admin_login
+login successfully
+Sun May 28 11:18:06 2017
+ID:1       user_login
+login successfully
+Sun May 28 15:04:28 2017
+ID:1       user_login
+login successfully
+Sun May 28 15:06:29 2017
+ID:1       user_login
+login failed
+Sun May 28 15:21:07 2017
+ID:1       user_login
+login successfully
+Sun May 28 15:21:10 2017
+ID:1       admin_login
+login successfully
+Sun May 28 15:24:57 2017
+ID:666     thing_input
+name:NVIDIA_GPU_1080Ti, time:现代, type:1,
+Sun May 28 15:27:55 2017
+ID:666     user_ownership
+name:NVIDIA_GPU_1080Ti, price_before:5000.000000, price_now:6000.000000
+Sun May 28 15:54:44 2017
+ID:1       admin_login
+login successfully
+Sun May 28 15:54:49 2017
+ID:1       thing_delete
+successfully
+Sun May 28 15:55:20 2017
+ID:2       thing_delete
+successfully
+Sun May 28 16:08:42 2017
+ID:1       admin_login
+login successfully
+Sun May 28 16:08:46 2017
+ID:6       thing_delete
+successfully

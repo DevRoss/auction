@@ -15,7 +15,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/auction.exe" afterPath="$PROJECT_DIR$/cmake-build-debug/auction.exe" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/things" afterPath="$PROJECT_DIR$/cmake-build-debug/things" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/adm" afterPath="$PROJECT_DIR$/cmake-build-debug/adm" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/logs.txt" afterPath="$PROJECT_DIR$/cmake-build-debug/logs.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/yhthings" afterPath="$PROJECT_DIR$/cmake-build-debug/yhthings" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/yonghu" afterPath="$PROJECT_DIR$/cmake-build-debug/yonghu" />
@@ -35,8 +34,8 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="262">
-              <caret line="722" column="0" lean-forward="false" selection-start-line="722" selection-start-column="0" selection-end-line="722" selection-end-column="0" />
+            <state relative-caret-position="460">
+              <caret line="228" column="48" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="2989" selection-end-column="0" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -48,16 +47,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>用户登录</find>
-      <find>del_yhthings</find>
-      <find>adm_ui</find>
-      <find>password</find>
-      <find>str</find>
-      <find>注册</find>
-      <find>flag</find>
-      <find>ui</find>
-      <find>统计所有用户物品信息</find>
-      <find>successfully, now_price</find>
       <find>hutin</find>
       <find>zuigaojia</find>
       <find>n_price</find>
@@ -72,12 +61,22 @@
       <find>yonghu_name</find>
       <find>y</find>
       <find>p</find>
-      <find>ui_1</find>
-      <find>insert_yhthings2</find>
-      <find>ui_2</find>
       <find>p_</find>
-      <find>p_yonghu_name</find>
+      <find>insert_yhthings2</find>
       <find>input</find>
+      <find>p_yonghu_name</find>
+      <find>insert_yhthings</find>
+      <find>ui_2</find>
+      <find>ui_1</find>
+      <find>skim</find>
+      <find>skim_yhthings</find>
+      <find>inser</find>
+      <find>8位学号</find>
+      <find>学号</find>
+      <find>flag</find>
+      <find>del</find>
+      <find>两秒</find>
+      <find>time</find>
     </findStrings>
     <replaceStrings>
       <replace>paimaipin</replace>
@@ -114,10 +113,10 @@
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="-9" />
-    <option name="y" value="-9" />
-    <option name="width" value="1938" />
-    <option name="height" value="1048" />
+    <option name="x" value="-1134" />
+    <option name="y" value="-182" />
+    <option name="width" value="1143" />
+    <option name="height" value="1768" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -440,7 +439,7 @@
       <workItem from="1495777142386" duration="2000" />
       <workItem from="1495883287186" duration="55000" />
       <workItem from="1495885591566" duration="17013000" />
-      <workItem from="1495936527713" duration="1490000" />
+      <workItem from="1495936527713" duration="13180000" />
     </task>
     <task id="LOCAL-00001" summary="add encryption function&#10;before add encryption to each function">
       <created>1493692748680</created>
@@ -505,11 +504,25 @@
       <option name="project" value="LOCAL" />
       <updated>1495891092435</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="输入用户名字">
+      <created>1495938960541</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1495938960541</updated>
+    </task>
+    <task id="LOCAL-00011" summary="fix the bug of deleting things">
+      <created>1495959136578</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1495959136578</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="114196000" />
+    <option name="totallyTimeSpent" value="125886000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -521,22 +534,22 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
+    <frame x="-1134" y="-182" width="1143" height="1768" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21239744" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.3295583" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3431067" sideWeight="0.49788582" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.3295583" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29898074" sideWeight="0.50422835" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295583" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38505095" sideWeight="0.49577168" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="WINDOWED" visible="true" show_stripe_button="true" weight="0.19450317" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="-686" y="162" width="573" height="986" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="WINDOWED" visible="false" show_stripe_button="true" weight="0.19450317" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="23" y="74" width="573" height="986" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3657984" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37804118" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.46849656" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34497815" sideWeight="0.49788582" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -571,17 +584,13 @@
     <MESSAGE value="version1.1 with show things with kind" />
     <MESSAGE value="debug" />
     <MESSAGE value="查询所有物bugfree" />
-    <option name="LAST_COMMIT_MESSAGE" value="查询所有物bugfree" />
+    <MESSAGE value="输入用户名字" />
+    <MESSAGE value="fix del good's bug" />
+    <MESSAGE value="fix the bug of deleting things" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix the bug of deleting things" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>1485</line>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -1002,8 +1011,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="262">
-          <caret line="722" column="0" lean-forward="false" selection-start-line="722" selection-start-column="0" selection-end-line="722" selection-end-column="0" />
+        <state relative-caret-position="460">
+          <caret line="228" column="48" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="2989" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>

@@ -2904,6 +2904,7 @@ void zuigaojia(struct paimaipin *p, struct yonghu *ppp)//»ñµÃ¾º¹ºµÄÉÌÆ·½á¹û£¬²¢Í
 
 void help()//°ïÖú
 {
+    system("cls");
     printf("\n\t\t***************************************");
     printf("\n\t\t*+*\t\t°ï  Öú \t\t*+*");
     printf("\n\t\t***************************************");
@@ -2917,15 +2918,14 @@ void help()//°ïÖú
     getchar();
     getchar();
     system("cls");
+
 }
 
 
 void develop()//×÷Õß
 {
     printf("\n\t\t       Ross");
-    printf("\n\n2Á½ÃëºóÍË³ö");
-    sleep(2);
-    system("cls");
+    printf("\n\n\n\n\n\n\n°´ÈÎÒâ¼ü·µ»Ø");
 }
 
 
